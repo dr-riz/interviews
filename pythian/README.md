@@ -41,7 +41,7 @@ Input: the search to search duplicate is set in $SEARCH
 Output: list of duplicates in the $SEARCH/duplicate file
 
 SEARCH=.
-for file in $(find $SEARCH -type f -links 1); do find $SEARCH -type f -links 1 -exec cmp -s "$file" {} \; -exec echo "duplicate $file" {} \;  ; done > $SEARCH/duplicate
+./fclone.sh
 
 Quick metrics: 
 - num_duplicates = number of lines in the duplicate file = wc -l $SEARCH/duplicate
@@ -63,8 +63,8 @@ Optimizations: (future work)
 - in the same spirit, compare if the "file" type are same or different. only compare if their file types are the same. 
 
 References:
-*[1] https://unix.stackexchange.com/questions/153286/is-cmp-faster-than-diff-q
-*[2] https://stackoverflow.com/questions/16282618/finding-files-that-are-not-hard-links-via-a-shell-script
-*[3] https://linux.die.net/man/1/cmp
-*[4] https://linux.die.net/man/1/find
+1. https://unix.stackexchange.com/questions/153286/is-cmp-faster-than-diff-q
+2. https://stackoverflow.com/questions/16282618/finding-files-that-are-not-hard-links-via-a-shell-script
+3. https://linux.die.net/man/1/cmp
+4. https://linux.die.net/man/1/find
  
