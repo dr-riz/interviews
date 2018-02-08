@@ -9,11 +9,34 @@ public class LRUCache {
 
 //		myCache = lruCache(cacheSize);
 		Map<Integer,String> cache = lruCache(3);
-		System.out.println(cache.size());
+		System.out.println("testing initial cache empty: " + 
+			((cache.size() == 0) ? "passed" : " failed" ));
+				
+		System.out.println("testing get on non-existent key: " + 
+			((cache.get(100) == null) ? "passed" : " failed" ));
+			
+		cache.put(100,"hello world");
+		   
+		System.out.println("testing get on existent key: " + 
+			((cache.get(100) != null) ? "passed" : " failed" ));		
+		 
+   		cache.put(101, "Operating System");  
+   		cache.put(102, "Data Communication and Networking");
+
+		System.out.println("testing cache full: " + 
+			((cache.size() == cacheSize) ? "passed" : " failed" ));
+   		
+   		//making 102 least recently used by accessing others
+   		cache.get(100);
+   		cache.get(101);
+		//insert a new element and confirm 102 is evicted  		
+   		cache.put(103, "103");  
+//		System.out.println("cache after eviction: "+ cache);
 		
-		cache.put(101,"Let us C");  
-   		cache.put(102, "Operating System");  
-   		cache.put(103, "Data Communication and Networking");  
+		System.out.println("insert a new element and confirm 102 is evicted: " + 
+			((cache.get(102) == null) ? "passed" : " failed" ));
+		
+   		  
    		System.out.println("Values before remove: "+ cache);   
 
 		//if(cache.size() = cacheSize) removeEldestEntry
