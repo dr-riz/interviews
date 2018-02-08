@@ -16,18 +16,23 @@ public class LRUCache {
    		cache.put(103, "Data Communication and Networking");  
    		System.out.println("Values before remove: "+ cache);   
 
+		//if(cache.size() = cacheSize) removeEldestEntry
+
 		cache.put(104, "104");  
-		System.out.println("Values before remove: "+ cache);  
+		cache.put(105, "105");  
+		cache.put(106, "106");  
+		System.out.println("overloading before remove: "+ cache);  
 
     }
 
 	public static Map<Integer,String> lruCache(final int maxSize) {
 		System.out.println("lruCache");
-    	return new LinkedHashMap<Integer,String>(maxSize*4/3, 0.75f, true) {
+    	return new LinkedHashMap<Integer,String>(maxSize, 0.75f, true) {
         	@Override
         	protected boolean removeEldestEntry(Map.Entry<Integer,String> eldest) {
             	return size() > maxSize;
         	}
+        	
    		};
 	}
 
