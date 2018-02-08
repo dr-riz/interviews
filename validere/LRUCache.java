@@ -18,15 +18,20 @@ public class LRUCache {
 
 		//if(cache.size() = cacheSize) removeEldestEntry
 
+		String an_entry= cache.get(101);
 		cache.put(104, "104");  
+		System.out.println("cache after eviction: "+ cache);  
 		cache.put(105, "105");  
 		cache.put(106, "106");  
-		System.out.println("overloading before remove: "+ cache);  
+		System.out.println("overloading: "+ cache);  
+		
+		String stale_entry= cache.get(101);
+		System.out.println("stale_entry: "+ stale_entry);  
+		
 
     }
 
-	public static Map<Integer,String> lruCache(final int maxSize) {
-		System.out.println("lruCache");
+	public static Map<Integer,String> lruCache(final int maxSize) {		
     	return new LinkedHashMap<Integer,String>(maxSize, 0.75f, true) {
         	@Override
         	protected boolean removeEldestEntry(Map.Entry<Integer,String> eldest) {
