@@ -38,9 +38,10 @@ Assumptions:
 - each file is considered a duplicate of itself
 
 Input: the search to search duplicate is set in $SEARCH
-Output: list of duplicates in the $SEARCH/duplicate file
+Output: list of duplicates in the ./duplicate file
 
 SEARCH=.
+
 ./fclone.sh
 
 Quick metrics: 
