@@ -51,25 +51,28 @@ public class LRUCache {
 		//System.out.println("setOfKeys: " + setOfKeys);
 		//System.out.println("cache.keySet(): " + cache.keySet());
 		
-		// confirm order of elements is from most to lru
+		// confirm order of elements changes when elements are accesses
 		//List<Integer> LRUOrder = new ArrayList<>(target.keySet());
+		List<Integer> oldOrder = new ArrayList<>(cache.keySet());
+		System.out.println("oldOrder: " + oldOrder);
+
+		cache.get(100);
+		
 		List<Integer> LRUOrder = new ArrayList<>(cache.keySet());
 		System.out.println("LRUOrder: " + LRUOrder);
-		
-		
+	
+		System.out.println("order of elements changes when elements are accesses: " + 
+			(!oldOrder.equals(LRUOrder) ? "passed" : " failed" ));		
+
+		// confirm order of elements is from lru to mru		
    		  
-   		System.out.println("Values before remove: "+ cache);   
+		List<Integer> expectedLRUOrder = new ArrayList<Integer>();
+		expectedLRUOrder.add(103);
+		expectedLRUOrder.add(101);
+		expectedLRUOrder.add(100);
 
-		//if(cache.size() = cacheSize) removeEldestEntry
-
-		String an_entry= cache.get(101);
-		cache.put(104, "104");  
-		//System.out.println("cache after eviction: "+ cache);  
-		cache.put(105, "105");  
-		cache.put(106, "106");  
-
-		
-
+		System.out.println("confirm order of elements is from lru to mru: " + 
+			(expectedLRUOrder.equals(LRUOrder) ? "passed" : " failed" ));
     }
 
 	public static Map<Integer,String> lruCache(final int maxSize) {		
