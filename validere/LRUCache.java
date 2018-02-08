@@ -2,14 +2,13 @@ import java.util.*;
 
 public class LRUCache {
 
-	static int cacheSize = 3;
+	static final int testSize = 3;
 
     public static void main(String[] args) {
         System.out.println("LRUCache");
 
-//		myCache = lruCache(cacheSize);
 		Map<Integer,String> cache = lruCache(3);
-		System.out.println("All Candidates for Junit testing\n");
+		System.out.println("= All Candidates for Junit testing =");
 		
 		System.out.println("testing initial cache empty: " + 
 			((cache.size() == 0) ? "passed" : " failed" ));
@@ -26,7 +25,7 @@ public class LRUCache {
    		cache.put(102, "two");
 
 		System.out.println("testing cache full: " + 
-			((cache.size() == cacheSize) ? "passed" : " failed" ));
+			((cache.size() == testSize) ? "passed" : " failed" ));
    					
    		//making 102 least recently used by accessing others
    		cache.get(100);
@@ -35,7 +34,7 @@ public class LRUCache {
    		cache.put(103, "three");  
    		
    		System.out.println("adding new k,v doesn't change size of cache: " + 
-			((cache.size() == cacheSize) ? "passed" : " failed" ));
+			((cache.size() == testSize) ? "passed" : " failed" ));
    		   		
 		// confirm 102 is evicted with the new insertion
 		System.out.println("insert a new element and confirm 102 is evicted: " + 
@@ -48,24 +47,16 @@ public class LRUCache {
 		System.out.println("accessing same elements does not lead to any eviction: " + 
 			(setOfKeys.equals(cache.keySet()) ? "passed" : " failed" ));
 
-		//System.out.println("setOfKeys: " + setOfKeys);
-		//System.out.println("cache.keySet(): " + cache.keySet());
-		
 		// confirm order of elements changes when elements are accesses
-		//List<Integer> LRUOrder = new ArrayList<>(target.keySet());
 		List<Integer> oldOrder = new ArrayList<>(cache.keySet());
-		System.out.println("oldOrder: " + oldOrder);
 
 		cache.get(100);
 		
 		List<Integer> LRUOrder = new ArrayList<>(cache.keySet());
-		System.out.println("LRUOrder: " + LRUOrder);
-	
 		System.out.println("order of elements changes when elements are accesses: " + 
 			(!oldOrder.equals(LRUOrder) ? "passed" : " failed" ));		
 
-		// confirm order of elements is from lru to mru		
-   		  
+		// confirm order of elements is from lru to mru		 		  
 		List<Integer> expectedLRUOrder = new ArrayList<Integer>();
 		expectedLRUOrder.add(103);
 		expectedLRUOrder.add(101);
@@ -83,7 +74,5 @@ public class LRUCache {
         	}
         	
    		};
-	}
-	
-	
+	}		
 }
