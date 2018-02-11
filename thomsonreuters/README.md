@@ -9,6 +9,7 @@ A non-ML architect asked me, given two arrays of words write pseudo code to give
 num_words = 0
 num_matches = 0
 
+```
 for m in array1:
 	for n in array2:
 		num_words++
@@ -16,4 +17,4 @@ for m in array1:
 			num_matches++
 
 percent_match = num_matches / num_words * 100
-
+```
