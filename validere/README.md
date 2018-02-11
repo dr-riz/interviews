@@ -15,5 +15,5 @@ Outstanding:
 - packaging and jar file
 
 References:
-[1] https://stackoverflow.com/questions/6398902/best-way-to-implement-lru-cache
-[2] https://www.javatpoint.com/java-linkedhashmap
+1. https://stackoverflow.com/questions/6398902/best-way-to-implement-lru-cache
+2. https://www.javatpoint.com/java-linkedhashmap
