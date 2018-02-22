@@ -42,7 +42,7 @@ pv_sessionized = FOREACH (GROUP pv BY memberId) {
            AS (time,memberId,request, url, sessionId);
 }
 
-dump pv_sessionized;
+dump pv_sessionized; -- remove after development
 -- pv_sessionized <== part 1: sessionized web data
 
 /* to be deleted
@@ -61,6 +61,10 @@ ordered_page_count = ORDER page_count BY page_hits; -- order by hit count for va
 
 Assumptions: 
 - a session of a single ip = all page hits during a fixed time window
+
+todo:
+- confirm ToUnixTime returns seconds or milliseconds
+- confirm 
 
 */
 
@@ -97,11 +101,8 @@ dump avg_session_len; -- <== answer to part 2
 
 */
 
-group_by_session = group pv_sessionized by sessionId;
-url_visits = FOREACH group_by_session GENERATE group, pv_sessionized.url, COUNT(pv_sessionized.url) as page_hits;
-
-group_by_session = group pv_sessionized by sessionId;
-url_visits = FOREACH group_by_session {
+grouppv_by_session = group pv_sessionized by sessionId;
+url_visits = FOREACH grouppv_by_session {
 	unique_urls = DISTINCT pv_sessionized.url;
 	GENERATE group, COUNT(unique_urls) as page_hits;
 }
@@ -113,9 +114,29 @@ ordered_url_visits = ORDER url_visits BY page_hits; -- <== part 3: (ordered) uni
 4. Find the most engaged users, ie the IPs with the longest session times
 
 Assumptions:
-- 
+- i
 
 */
+
+most_engaged_users = ORDER session_times by session_length; -- <== part 4: sessionid, ips with the longest session length
+
+session_times =
+  FOREACH (GROUP pv_sessionized BY (sessionId,memberId)) {
+    GENERATE group.sessionId as sessionId,
+             group.memberId as memberId,
+             (MAX(pv_sessionized.time) - MIN(pv_sessionized.time))
+               / 1000.0 / 60.0 as session_length; -- why dividing by 1000. it's already in seconds?
+}
+
+group_by_session = group session_times by sessionId;
+
+
+
+all_group = group session_times all;
+
+avg_session_len = foreach all_group generate AVG(session_times.session_length) as avg_session_duration;
+
+
 
 delta_times = FOREACH min_max_times GENERATE group, MinutesBetween(latest_time,earliest_time) as delta_mins;
 
