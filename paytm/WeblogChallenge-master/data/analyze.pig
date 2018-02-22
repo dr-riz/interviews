@@ -4,9 +4,18 @@ Rizwans-MacBook-Pro:data rmian$ pig --version
 Apache Pig version 0.15.0 (r1682971) 
 compiled Jun 01 2015, 11:43:55
 
+Using pig -x local
+
 */
 
-weblog = load '2015_07_22_mktplace_shop_web_log_sample.log.gz' using PigStorage(' ') as (timestamp:datetime, elb,	client_port, backend_port, request_processing_time, backend_processing_time, response_processing_time, elb_status_code, backend_status_code, received_bytes, sent_bytes, request, url, user_agent, ssl_cipher, ssl_protocol);
+register /Users/rmian/Documents/jobs/interviews/paytm/WeblogChallenge-master/data/datafu-pig-incubating-1.3.3.jar
+
+DEFINE Sessionize datafu.pig.sessions.Sessionize('10m'); 
+DEFINE Median datafu.pig.stats.StreamingMedian();
+DEFINE Quantile datafu.pig.stats.StreamingQuantile('0.9','0.95');
+DEFINE VAR datafu.pig.VAR();
+
+weblog = load 'random_10_examples.log' using PigStorage(' ') as (date_time:datetime, elb,	client_port, backend_port, request_processing_time, backend_processing_time, response_processing_time, elb_status_code, backend_status_code, received_bytes, sent_bytes, request, url, user_agent, ssl_cipher, ssl_protocol);
 
 /* 
 
@@ -24,7 +33,14 @@ todo:
 
 */
 
-selected = FOREACH weblog GENERATE timestamp, REGEX_EXTRACT(client_port, '(.*):(.*)', 1) as visitor_ip, request, url;  
+selected = FOREACH weblog GENERATE ToUnixTime(date_time) as timestamp, REGEX_EXTRACT(client_port, '(.*):(.*)', 1) as visitor_ip, request, url;  
+
+pv_sessionized = FOREACH (GROUP selected BY visitor_ip) {
+	ordered = ORDER selected BY timestamp;
+  	GENERATE FLATTEN(Sessionize(ordered))
+           AS (timestamp,visitor_ip,sessionId);
+}
+	GENERATE
 
 group_by_ip = group selected by visitor_ip; -- <== required sessions for part 1
 
