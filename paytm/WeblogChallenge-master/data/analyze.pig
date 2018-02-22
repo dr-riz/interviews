@@ -6,14 +6,11 @@ compiled Jun 01 2015, 11:43:55
 
 Using pig -x local
 
+External libs: DataFu
+
 */
 
 register /Users/rmian/Documents/jobs/interviews/paytm/WeblogChallenge-master/data/datafu-pig-incubating-1.3.3.jar
-
-DEFINE Sessionize datafu.pig.sessions.Sessionize('10m'); 
-DEFINE Median datafu.pig.stats.StreamingMedian();
-DEFINE Quantile datafu.pig.stats.StreamingQuantile('0.9','0.95');
-DEFINE VAR datafu.pig.VAR();
 
 weblog = load 'random_10_examples.log' using PigStorage(' ') as (date_time:datetime, elb,	client_port, backend_port, request_processing_time, backend_processing_time, response_processing_time, elb_status_code, backend_status_code, received_bytes, sent_bytes, request, url, user_agent, ssl_cipher, ssl_protocol);
 
@@ -24,22 +21,34 @@ Processing & Analytical goals:
 "1. Sessionize the web log by IP. Sessionize = aggregrate all page hits by visitor/IP during a fixed time window. https://en.wikipedia.org/wiki/Session_(web_analytics)"
 
 Assumptions:
+- fixed time window or session length = 10m
 - page hits include both Get and Post requests
 - paga hits aka page counts
 
-todo: 
-- filter by time
-- calculate the time span of logs based on log only
-
 */
 
-selected = FOREACH weblog GENERATE ToUnixTime(date_time) as timestamp, REGEX_EXTRACT(client_port, '(.*):(.*)', 1) as visitor_ip, request, url;  
+DEFINE Sessionize datafu.pig.sessions.Sessionize('10m'); 
+DEFINE Median datafu.pig.stats.StreamingMedian();
+DEFINE Quantile datafu.pig.stats.StreamingQuantile('0.9','0.95');
+DEFINE VAR datafu.pig.VAR();
 
-pv_sessionized = FOREACH (GROUP selected BY visitor_ip) {
-	ordered = ORDER selected BY timestamp;
-  	GENERATE FLATTEN(Sessionize(ordered))
-           AS (timestamp,visitor_ip,sessionId);
+-- selected = FOREACH weblog GENERATE ToUnixTime(date_time) as timestamp, REGEX_EXTRACT(client_port, '(.*):(.*)', 1) as visitor_ip, request, url;  
+
+pv = FOREACH weblog GENERATE ToUnixTime(date_time) as time, REGEX_EXTRACT(client_port, '(.*):(.*)', 1) as memberId, request, url; 
+
+-- pv = FOREACH selected GENERATE timestamp as time,visitor_ip as memberId;
+
+--pv = FOREACH pv GENERATE time, memberId;
+pv_sessionized = FOREACH (GROUP pv BY memberId) {
+  ordered = ORDER pv BY time;
+  GENERATE FLATTEN(Sessionize(ordered))
+           AS (time,memberId,request, url, sessionId);
 }
+
+dump pv_sessionized;
+-- pv_sessionized <== part 1 completed: sessionized web data
+
+
 	GENERATE
 
 group_by_ip = group selected by visitor_ip; -- <== required sessions for part 1
