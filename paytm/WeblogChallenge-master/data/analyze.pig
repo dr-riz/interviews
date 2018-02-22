@@ -30,7 +30,7 @@ Assumptions:
 DEFINE Sessionize datafu.pig.sessions.Sessionize('10m'); 
 DEFINE Median datafu.pig.stats.StreamingMedian();
 DEFINE Quantile datafu.pig.stats.StreamingQuantile('0.9','0.95');
-DEFINE VAR datafu.pig.VAR();
+DEFINE VAR datafu.pig.stats.VAR();
 
 pv = FOREACH weblog GENERATE ToUnixTime(date_time) as time, REGEX_EXTRACT(client_port, '(.*):(.*)', 1) as memberId, request, url; 
 
@@ -86,8 +86,19 @@ ordered_url_visits = ORDER url_visits BY page_hits; -- <== part 3: (ordered) uni
 
 */
 
--- <== part 4: sessionId, ips with the longest session length
-most_engaged_users = ORDER session_times by session_length; 
+session_stats = FOREACH (GROUP session_times ALL) {
+  GENERATE
+    AVG(session_times.session_length) as avg_session,
+    SQRT(VAR(session_times.session_length)) as std_dev_session,
+    Median(session_times.session_length) as median_session,
+    Quantile(session_times.session_length) as quantile_session;
+}
+
+long_sessions = FILTER session_times BY
+  session_length > session_stats.quantiles_session.quantile_0_95;
+  
+most_engaged_users = DISTINCT (FOREACH long_sessions GENERATE memberId, session_length);
+DUMP most_engaged_users; -- <== part 4: ips with the longest session length
 
 /*
 
