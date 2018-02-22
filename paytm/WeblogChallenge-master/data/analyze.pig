@@ -40,8 +40,9 @@ pv_sessionized = FOREACH (GROUP pv BY memberId) {
            AS (time,memberId,request, url, sessionId);
 }
 
-dump pv_sessionized; -- remove after development
--- pv_sessionized <== part 1: sessionized web data
+L = LIMIT pv_sessionized 3; <== part 1: sessionized web data
+
+dump L; -- remove after development
 
 /* 
 
@@ -80,6 +81,8 @@ url_visits = FOREACH group_by_session {
 
 ordered_url_visits = ORDER url_visits BY page_hits; -- <== part 3: (ordered) unique URL visits per session
 
+L = LIMIT ordered_url_visits 3;
+
 /*
 
 4. Find the most engaged users, ie the IPs with the longest session times
@@ -114,8 +117,16 @@ method: simple time series or running average. average the number of transaction
 
 */
 
-predlog = load 'web_log.csv' using PigStorage(' ') as (timestamp:datetime, elb,	client_port, backend_port, request_processing_time, backend_processing_time, response_processing_time, elb_status_code, backend_status_code, received_bytes, sent_bytes, request, url, user_agent, ssl_cipher, ssl_protocol);
+pv_ordered = ORDER pv BY time;
+all_group = group pv_ordered all;
+max_timestamp = foreach all_group generate MAX(pv_ordered.time) as max_time;
 
-selected = FOREACH weblog GENERATE timestamp, REGEX_EXTRACT(client_port, '(.*):(.*)', 1) as visitor_ip, request, url; 
+last_m_samples = FILTER pv_ordered BY time > (max_timestamp.max_time/60 - 5); -- convert to min and subtract 5m
 
-<-- not done yet
+last_m_samples_all = Group last_m_samples All;
+rate = foreach last_m_samples_all  Generate COUNT(last_m_samples.request) as num_requests;
+prediction = FOREACH rate GENERATE num_requests/5.0*60.0 as requests_per_second:double;
+dump prediction;
+
+
+last_m_samples = FILTER pv_ordered BY time > max_timestamp;
