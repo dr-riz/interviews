@@ -1,22 +1,10 @@
-﻿/* 
-
-analyze.pig
+﻿/* analyze.pig
 
 Rizwans-MacBook-Pro:data rmian$ pig --version
 Apache Pig version 0.15.0 (r1682971) 
 compiled Jun 01 2015, 11:43:55
 
-register /usr/local/Cellar/pig/0.15.0/libexec/lib/hadoop1-runtime/hadoop-core-1.0.4.jar
-register /usr/local/Cellar/pig/0.15.0/libexec/lib/hadoop1-runtime/commons-cli-1.2.jar
-register /usr/local/Cellar/pig/0.15.0/libexec/lib/hadoop1-runtime/commons-io-2.3.jar
-register /usr/local/Cellar/pig/0.15.0/libexec/lib/hadoop1-runtime/commons-logging-1.1.1.jar
-register /usr/local/Cellar/pig/0.15.0/libexec/pig-0.15.0-core-h1.jar
-register /usr/local/Cellar/pig/0.15.0/libexec/pig-0.15.0-core-h2.jar
-
 */
-
--- weblog = load 'random_10_examples.log' using PigStorage(' ') as (timestamp:datetime, elb,	client_port, backend_port, request_processing_time, backend_processing_time, response_processing_time, elb_status_code, backend_status_code, received_bytes, sent_bytes, request, url, user_agent, ssl_cipher, ssl_protocol);
-
 
 weblog = load 'random_10_examples.log' using PigStorage(' ') as (timestamp:datetime, elb,	client_port, backend_port, request_processing_time, backend_processing_time, response_processing_time, elb_status_code, backend_status_code, received_bytes, sent_bytes, request, url, user_agent, ssl_cipher, ssl_protocol);
 
@@ -50,7 +38,7 @@ group_by_ip = group selected by visitor_ip; -- <== required sessions for part 1
 
 -- bonus :-)
 page_count = FOREACH group_by_ip GENERATE group, COUNT(selected.visitor_ip) as page_hits;
-ordered_page_count = ORDER page_count BY page_hits;
+ordered_page_count = ORDER page_count BY page_hits; -- order by hit count for validation
 
 /* 
 
@@ -75,3 +63,48 @@ all_group = group delta_times all;
 -- session_len = foreach all_group generate (delta_times.group,delta_times.delta_mins),AVG(delta_times.delta_mins) as avg_session_duration;
 
 session_len = foreach all_group generate AVG(delta_times.delta_mins) as avg_session_duration;
+
+
+/*
+
+3. Determine unique URL visits per session. To clarify, count a hit to a unique URL only once per session.
+
+Assumptions: 
+- session length includes the entire duration of the log
+
+*/
+
+group_by_url = group selected by url;
+url_visits = FOREACH group_by_url GENERATE group, COUNT(selected.url) as page_hits;
+ordered_url_visits = ORDER url_visits BY page_hits;
+
+/*
+
+4. Find the most engaged users, ie the IPs with the longest session times
+
+Assumptions:
+- 
+
+*/
+
+delta_times = FOREACH min_max_times GENERATE group, MinutesBetween(latest_time,earliest_time) as delta_mins;
+
+most_engaged_users = ORDER delta_times by delta_mins;
+
+/*
+
+Additional questions for Machine Learning Engineer (MLE) candidates:
+
+1. Predict the expected load (requests/second) in the next minute
+
+Assumptions:
+- the log is in the ascending order of timestamps. By eye balling, the log is loosely follows this assumption.
+- each record in the log represents a request
+
+method: simple time series or running average. average the number of transactions in last some minutes, say 5m, to estimate load next minute
+
+*/
+
+predlog = load 'web_log.csv' using PigStorage(' ') as (timestamp:datetime, elb,	client_port, backend_port, request_processing_time, backend_processing_time, response_processing_time, elb_status_code, backend_status_code, received_bytes, sent_bytes, request, url, user_agent, ssl_cipher, ssl_protocol);
+
+selected = FOREACH weblog GENERATE timestamp, REGEX_EXTRACT(client_port, '(.*):(.*)', 1) as visitor_ip, request, url; 
