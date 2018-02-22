@@ -14,27 +14,27 @@ The challenge is to make make analytical observations about the data using the d
 
 > fixed time window or session length = 10m
 
-'''
+```
 grunt> describe pv_sessionized;
 pv_sessionized: {time: long,memberId: chararray,request: bytearray,url: bytearray,sessionId: chararray}
 
 L = LIMIT pv_sessionized 3; -- <== part 1: sessionized web data
-'''
+```
 
 2. Determine the average session time
 
-'''
+```
 DESCRIBE session_stats; -- <== part 2: includes average session time
 session_stats: {avg_session: double,std_dev_session: double,median_session: (quantile_0_5: double),quantile_session: (quantile_0_9: double,quantile_0_95: double)}
 DUMP session_stats; 
 (44.39341719679457,..) -- 44m cannot be true as the session time window is 10m
-'''
+```
 
 3. Determine unique URL visits per session. To clarify, count a hit to a unique URL only once per session.
 
-'''
+```
 ordered_url_visits = ORDER url_visits BY page_hits;  -- <== part 3: (ordered) unique URL visits per session
-'''
+```
 
 4. Find the most engaged users, ie the IPs with the longest session times
 
@@ -42,10 +42,10 @@ ordered_url_visits = ORDER url_visits BY page_hits;  -- <== part 3: (ordered) un
 1. Predict the expected load (requests/second) in the next minute
 
 > Method: simple time series or running average. average the number of transactions in last some minutes, say 5, to estimate load next minute
-'''
+```
 dump prediction; -- <== part 1: MLE predict the expected load (requests/second) 
 (1.3902E7) -- seems very high!!!
-'''
+```
 
 2. Predict the session length for a given IP [only]
 
@@ -59,12 +59,12 @@ dump prediction; -- <== part 1: MLE predict the expected load (requests/second)
 
 > Method: Using session_stats from part (4) of P&A.
 
-'''
+```
 describe predicted_session_length;
 predicted_session_length: {avg_session: double,std_dev_session: double}
 dump predicted_session_length;
 (44.393417196794196,143.88047555352557) -- standard deviation is many folds of mean
-'''
+```
 
 3. Predict the number of unique URL visits by a given IP [bound to a session]
 
@@ -72,12 +72,12 @@ dump predicted_session_length;
 * Discussion: the discussion on ip address as a feature in MLE part 2 also applies here.
 > Method: Using session_stats from part (3) of P&A.
 
-'''
+```
 describe predicted_unquie_URL_visits;
 predicted_unquie_URL_visits: {avg_hits: double,std_dev_hits: double}
 dump predicted_unquie_URL_visits;
 (9.526594804735819,116.89537611835442)
-'''
+```
 
 ## Tools allowed (in no particular order):
 - Used path of least resistance. Pig on local mac.
@@ -94,7 +94,6 @@ dump predicted_unquie_URL_visits;
 http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/access-log-collection.html#access-log-entry-format
 
 
-
 ## What are we looking for? What does this prove?
 
 We want to see how you handle:
@@ -102,3 +101,6 @@ We want to see how you handle:
 - Messy (ie real) data
 - Understanding data transformation
 This is not a pass or fail test, we want to hear about your challenges and your successes with this particular problem.
+
+## Challenges faced
+- data handling with the syntax of pig latin
