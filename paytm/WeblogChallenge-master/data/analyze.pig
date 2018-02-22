@@ -12,7 +12,7 @@ External libs: DataFu
 
 register /Users/rmian/Documents/jobs/interviews/paytm/WeblogChallenge-master/data/datafu-pig-incubating-1.3.3.jar
 
-weblog = load 'random_10_examples.log' using PigStorage(' ') as (date_time:datetime, elb,	client_port, backend_port, request_processing_time, backend_processing_time, response_processing_time, elb_status_code, backend_status_code, received_bytes, sent_bytes, request, url, user_agent, ssl_cipher, ssl_protocol);
+weblog = load 'web_log.csv' using PigStorage(' ') as (date_time:datetime, elb,	client_port, backend_port, request_processing_time, backend_processing_time, response_processing_time, elb_status_code, backend_status_code, received_bytes, sent_bytes, request, url, user_agent, ssl_cipher, ssl_protocol);
 
 /* 
 
@@ -32,8 +32,6 @@ DEFINE Median datafu.pig.stats.StreamingMedian();
 DEFINE Quantile datafu.pig.stats.StreamingQuantile('0.9','0.95');
 DEFINE VAR datafu.pig.VAR();
 
--- selected = FOREACH weblog GENERATE ToUnixTime(date_time) as timestamp, REGEX_EXTRACT(client_port, '(.*):(.*)', 1) as visitor_ip, request, url;  
-
 pv = FOREACH weblog GENERATE ToUnixTime(date_time) as time, REGEX_EXTRACT(client_port, '(.*):(.*)', 1) as memberId, request, url; 
 
 pv_sessionized = FOREACH (GROUP pv BY memberId) {
@@ -45,26 +43,12 @@ pv_sessionized = FOREACH (GROUP pv BY memberId) {
 dump pv_sessionized; -- remove after development
 -- pv_sessionized <== part 1: sessionized web data
 
-/* to be deleted
-	GENERATE
-
-group_by_ip = group selected by visitor_ip; -- <== required sessions for part 1
-
--- bonus :-)
-page_count = FOREACH group_by_ip GENERATE group, COUNT(selected.visitor_ip) as page_hits;
-ordered_page_count = ORDER page_count BY page_hits; -- order by hit count for validation
-*/
-
 /* 
 
 2. Determine the average session time
 
 Assumptions: 
 - a session of a single ip = all page hits during a fixed time window
-
-todo:
-- confirm ToUnixTime returns seconds or milliseconds
-- confirm 
 
 */
 
@@ -73,7 +57,7 @@ session_times =
     GENERATE group.sessionId as sessionId,
              group.memberId as memberId,
              (MAX(pv_sessionized.time) - MIN(pv_sessionized.time))
-               / 1000.0 / 60.0 as session_length;
+               / 60.0 as session_length;
 }
 
 all_group = group session_times all;
@@ -82,27 +66,14 @@ avg_session_len = foreach all_group generate AVG(session_times.session_length) a
 
 dump avg_session_len; -- <== part 2: average session length
 
-/* to be deleted
-
-min_max_times = FOREACH group_by_ip GENERATE group, MIN(selected.timestamp) as earliest_time, MAX(selected.timestamp) as latest_time;
-
-delta_times = FOREACH min_max_times GENERATE group, MinutesBetween(latest_time,earliest_time) as delta_mins;
-
-all_group = group delta_times all;
-
-avg_session_len = foreach all_group generate AVG(delta_times.delta_mins) as avg_session_duration;
-
-dump avg_session_len; -- <== answer to part 2
-
-*/
 /*
 
 3. Determine unique URL visits per session. To clarify, count a hit to a unique URL only once per session.
 
 */
 
-grouppv_by_session = group pv_sessionized by sessionId;
-url_visits = FOREACH grouppv_by_session {
+group_by_session = group pv_sessionized by sessionId;
+url_visits = FOREACH group_by_session {
 	unique_urls = DISTINCT pv_sessionized.url;
 	GENERATE group, COUNT(unique_urls) as page_hits;
 }
@@ -113,34 +84,10 @@ ordered_url_visits = ORDER url_visits BY page_hits; -- <== part 3: (ordered) uni
 
 4. Find the most engaged users, ie the IPs with the longest session times
 
-Assumptions:
-- i
-
 */
 
-most_engaged_users = ORDER session_times by session_length; -- <== part 4: sessionid, ips with the longest session length
-
-session_times =
-  FOREACH (GROUP pv_sessionized BY (sessionId,memberId)) {
-    GENERATE group.sessionId as sessionId,
-             group.memberId as memberId,
-             (MAX(pv_sessionized.time) - MIN(pv_sessionized.time))
-               / 1000.0 / 60.0 as session_length; -- why dividing by 1000. it's already in seconds?
-}
-
-group_by_session = group session_times by sessionId;
-
-
-
-all_group = group session_times all;
-
-avg_session_len = foreach all_group generate AVG(session_times.session_length) as avg_session_duration;
-
-
-
-delta_times = FOREACH min_max_times GENERATE group, MinutesBetween(latest_time,earliest_time) as delta_mins;
-
-most_engaged_users = ORDER delta_times by delta_mins; -- <== answer to part 4
+-- <== part 4: sessionId, ips with the longest session length
+most_engaged_users = ORDER session_times by session_length; 
 
 /*
 
