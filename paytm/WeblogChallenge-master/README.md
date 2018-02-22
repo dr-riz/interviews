@@ -1,3 +1,7 @@
+As suggested, this is a clone from Paytm challenge with due credits: https://github.com/PaytmLabs/WeblogChallenge
+
+I annotate the tasks with my notes.
+
 # WeblogChallenge
 This is an interview challenge for Paytm Labs. Please feel free to fork. Pull Requests will be ignored.
 

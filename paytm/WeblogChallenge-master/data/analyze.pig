@@ -6,7 +6,7 @@ compiled Jun 01 2015, 11:43:55
 
 */
 
-weblog = load 'random_10_examples.log' using PigStorage(' ') as (timestamp:datetime, elb,	client_port, backend_port, request_processing_time, backend_processing_time, response_processing_time, elb_status_code, backend_status_code, received_bytes, sent_bytes, request, url, user_agent, ssl_cipher, ssl_protocol);
+weblog = load '2015_07_22_mktplace_shop_web_log_sample.log.gz' using PigStorage(' ') as (timestamp:datetime, elb,	client_port, backend_port, request_processing_time, backend_processing_time, response_processing_time, elb_status_code, backend_status_code, received_bytes, sent_bytes, request, url, user_agent, ssl_cipher, ssl_protocol);
 
 /* 
 
@@ -15,20 +15,12 @@ Processing & Analytical goals:
 "1. Sessionize the web log by IP. Sessionize = aggregrate all page hits by visitor/IP during a fixed time window. https://en.wikipedia.org/wiki/Session_(web_analytics)"
 
 Assumptions:
-- time period is from 9 to 10
 - page hits include both Get and Post requests
 - paga hits aka page counts
-- granularity required is till second, so ignoring milli seconds
 
 todo: 
 - filter by time
-- calculate the time span of logs based on time only
-
-lower_bound = ToDate('2015-07-22', 'yyyy-MM-dd');
-
-time_log = FILTER weblog BY timestamp < '2015-07-22T05';
-
-time_log = FILTER weblog BY timestamp < timestamp + 15m;
+- calculate the time span of logs based on log only
 
 */
 
@@ -54,16 +46,9 @@ delta_times = FOREACH min_max_times GENERATE group, MinutesBetween(latest_time,e
 
 all_group = group delta_times all;
 
--- session_count = foreach all_group generate count(delta_times);
+avg_session_len = foreach all_group generate AVG(delta_times.delta_mins) as avg_session_duration;
 
--- session_count = FOREACH (GROUP delta_times ALL) GENERATE COUNT(delta_times);
-
--- session_len = foreach all_group generate (delta_times.group,delta_times.delta_mins),SUM(delta_times.delta_mins);
-
--- session_len = foreach all_group generate (delta_times.group,delta_times.delta_mins),AVG(delta_times.delta_mins) as avg_session_duration;
-
-session_len = foreach all_group generate AVG(delta_times.delta_mins) as avg_session_duration;
-
+dump avg_session_len; -- <== answer to part 2
 
 /*
 
@@ -76,7 +61,7 @@ Assumptions:
 
 group_by_url = group selected by url;
 url_visits = FOREACH group_by_url GENERATE group, COUNT(selected.url) as page_hits;
-ordered_url_visits = ORDER url_visits BY page_hits;
+ordered_url_visits = ORDER url_visits BY page_hits; -- <== answer to part 3
 
 /*
 
@@ -89,7 +74,7 @@ Assumptions:
 
 delta_times = FOREACH min_max_times GENERATE group, MinutesBetween(latest_time,earliest_time) as delta_mins;
 
-most_engaged_users = ORDER delta_times by delta_mins;
+most_engaged_users = ORDER delta_times by delta_mins; -- <== answer to part 4
 
 /*
 
@@ -108,3 +93,5 @@ method: simple time series or running average. average the number of transaction
 predlog = load 'web_log.csv' using PigStorage(' ') as (timestamp:datetime, elb,	client_port, backend_port, request_processing_time, backend_processing_time, response_processing_time, elb_status_code, backend_status_code, received_bytes, sent_bytes, request, url, user_agent, ssl_cipher, ssl_protocol);
 
 selected = FOREACH weblog GENERATE timestamp, REGEX_EXTRACT(client_port, '(.*):(.*)', 1) as visitor_ip, request, url; 
+
+<-- not done yet
