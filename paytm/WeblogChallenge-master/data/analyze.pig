@@ -22,7 +22,7 @@ register /usr/local/Cellar/pig/0.15.0/libexec/pig-0.15.0-core-h2.jar
 
 weblog = load 'random_10_examples.log' using PigStorage(' ') as (timestamp:datetime, app,	client_port, local,	x1, x2,	x3,	x4,	x5,	x6,	x7,	request, url, brower_os, x8, tls);
 
-weblog = load 'random_10_examples.log' using PigStorage(' ') as (timestamp:datetime, elb,	client_port, backend_port, request_processing_time, backend_processing_time, response_processing_time, elb_status_code, backend_status_code, received_bytes, sent_bytes, request, user_agent, ssl_cipher, ssl_protocol);
+weblog = load 'random_10_examples.log' using PigStorage(' ') as (timestamp:datetime, elb,	client_port, backend_port, request_processing_time, backend_processing_time, response_processing_time, elb_status_code, backend_status_code, received_bytes, sent_bytes, request, url, user_agent, ssl_cipher, ssl_protocol);
 
 /* 
 
@@ -40,18 +40,21 @@ todo:
 - filter by time
 - calculate the time span of logs based on time only
 
-lower_bound = ToDate('2015-07-22T11:02:43', 'yyyy-MM-ddTHH:mm:ss');
+lower_bound = ToDate('2015-07-22', 'yyyy-MM-dd');
 
 time_log = FILTER weblog BY timestamp < '2015-07-22T05';
 
 */
 
+time_log = FILTER weblog BY timestamp < timestamp + 15m;
+
+
 selected = FOREACH weblog GENERATE timestamp, REGEX_EXTRACT(client_port, '(.*):(.*)', 1) as visitor_ip, request, url;  
 
-sessions = group selected by visitor_ip; -- <== required sessions for part 1
+group_by_ip = group selected by visitor_ip; -- <== required sessions for part 1
 
 -- bonus :-)
-page_count = FOREACH sessions GENERATE group, COUNT(selected.visitor_ip) as page_hits;
+page_count = FOREACH group_by_ip GENERATE group, COUNT(selected.visitor_ip) as page_hits;
 ordered_page_count = ORDER page_count BY page_hits;
 
 /* 
@@ -61,6 +64,43 @@ ordered_page_count = ORDER page_count BY page_hits;
 Assumptions: 
 - a session of a single ip = all page hits during a fixed time window
 */
+
+min_max_times = FOREACH group_by_ip GENERATE group, MIN(selected.timestamp) as earliest_time, MAX(selected.timestamp) as latest_time;
+
+delta_times = FOREACH min_max_times GENERATE group, MinutesBetween(latest_time,earliest_time) as delta_mins;
+
+all_group = group delta_times all;
+
+session_count = foreach all_group generate count(delta_times);
+
+session_count = FOREACH (GROUP delta_times ALL) GENERATE COUNT(delta_times);
+
+session_len = foreach all_group generate (delta_times.group,delta_times.delta_mins),SUM(delta_times.delta_mins);
+
+session_len = foreach all_group generate (delta_times.group,delta_times.delta_mins),AVG(delta_times.delta_mins) as avg_session_duration;
+
+avg_session_duration = FOREACH (GROUP delta_times ALL) GENERATE group, SUM(delta_mins);
+
+
+delta_times.group, delta_times.delta_mins, avg(delta_times.delta_mins); 
+
+avg_session_time = FOREACH delta_times generate count(group), sum(delta_mins);
+   (employee_data.name,employee_data.daily_typing_pages),SUM(employee_data.daily_typing_pages);
+
+
+
+
+
+
+
+
+delta_times = foreach min_max_times GENERATE group, MinutesBetween(min_max_times.latest_time, min_max_times.earliest_time);
+
+
+times = foreach group_by_ip GENERATE group, MAX(group_by_ip.timestamp) as latest_time, MIN(group_by_ip.timestamp) as earliest_time;
+
+ FOREACH sessions GENERATE group, avg(selected.timestamp) as avg_time;
+
 
 avg_session_time = FOREACH sessions GENERATE group, avg(selected.timestamp) as avg_time;
 ordered_page_count = ORDER avg_session_time BY avg_time;
