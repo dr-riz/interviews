@@ -3,9 +3,9 @@ As requested, this is a clone from Paytm challenge with due credits: https://git
 I annotate the tasks with my notes.
 
 # WeblogChallenge
-This is an interview challenge for Paytm Labs. Please feel free to fork. Pull Requests will be ignored.
+This is an interview challenge by Paytm Labs. 
 
-The challenge is to make make analytical observations about the data using the distributed tools below.
+The challenge is to make make analytical \[and predictive\] observations about the data using the distributed tools below.
 
 ## Processing & Analytical goals:
 
@@ -15,10 +15,8 @@ The challenge is to make make analytical observations about the data using the d
 > fixed time window or session length = 10m
 
 ```
-grunt> describe pv_sessionized;
+grunt> describe pv_sessionized; -- <== part 1: sessionized web data
 pv_sessionized: {time: long,memberId: chararray,request: bytearray,url: bytearray,sessionId: chararray}
-
-L = LIMIT pv_sessionized 3; -- <== part 1: sessionized web data
 ```
 
 2. Determine the average session time
@@ -27,7 +25,7 @@ L = LIMIT pv_sessionized 3; -- <== part 1: sessionized web data
 DESCRIBE session_stats; -- <== part 2: includes average session time
 session_stats: {avg_session: double,std_dev_session: double,median_session: (quantile_0_5: double),quantile_session: (quantile_0_9: double,quantile_0_95: double)}
 DUMP session_stats; 
-(44.39341719679457,..) -- 44m cannot be true as the session time window is 10m
+(44.39341719679457,..) -- 44m cannot be true as the session time window is 10m?
 ```
 
 3. Determine unique URL visits per session. To clarify, count a hit to a unique URL only once per session.
@@ -49,7 +47,7 @@ dump prediction; -- <== part 1: MLE predict the expected load (requests/second)
 
 2. Predict the session length for a given IP [only]
 
-*Discussion: Ask is to predict the session length (regression) given one feature only, namely ip address. An ip address is (near) unique. We need features to generalize to train a regression model. For example, received_bytes is a generalizable and a numeric feature. In this example, the intuition is if the size of the request received from the client is large, so will be the session length or duration.
+*Discussion: Ask is to predict the session length (regression) given one feature only, namely ip address. My peers actually build a model \[1,2\]. I hold a different view. An ip address is (near) unique. We need features to generalize to train a regression model. For example, received_bytes is a generalizable and a numeric feature. In this example, the intuition is if the size of the request received from the client is large, so will be the session length or duration.
 
 *Unless, an ip address is a proxy to a generalizable feature such as population of the city where the traffic is coming from, for example. This merits investigation and left as future work.
 
@@ -104,3 +102,9 @@ This is not a pass or fail test, we want to hear about your challenges and your 
 
 ## Challenges faced
 - data handling with the syntax of pig latin
+- Unclear purpose of the analytical and prediction exercise as that would have guided the investigation. One possible objective is maximum user engagement.
+
+## References
+1. https://github.com/lawrenceyan/WeblogChallenge
+2. https://github.com/shuangao/paytm
+3. http://datafu.incubator.apache.org/docs/datafu/getting-started.html
