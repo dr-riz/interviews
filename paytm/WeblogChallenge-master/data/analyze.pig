@@ -81,8 +81,6 @@ url_visits = FOREACH group_by_session {
 
 ordered_url_visits = ORDER url_visits BY page_hits; -- <== part 3: (ordered) unique URL visits per session
 
-L = LIMIT ordered_url_visits 3;
-
 /*
 
 4. Find the most engaged users, ie the IPs with the longest session times
@@ -117,16 +115,61 @@ method: simple time series or running average. average the number of transaction
 
 */
 
-pv_ordered = ORDER pv BY time;
-all_group = group pv_ordered all;
-max_timestamp = foreach all_group generate MAX(pv_ordered.time) as max_time;
+all_group = group pv all;
+max_timestamp = foreach all_group generate MAX(pv.time) as max_time;
 
-last_m_samples = FILTER pv_ordered BY time > (max_timestamp.max_time/60 - 5); -- convert to min and subtract 5m
+last_m_samples = FILTER pv BY time > (max_timestamp.max_time/60 - 5); -- convert to min and subtract 5m
 
 last_m_samples_all = Group last_m_samples All;
 rate = foreach last_m_samples_all  Generate COUNT(last_m_samples.request) as num_requests;
 prediction = FOREACH rate GENERATE num_requests/5.0*60.0 as requests_per_second:double;
-dump prediction;
+dump prediction; -- <== part 1: MLE predict the expected load (requests/second) 
+
+/*
+
+2. Predict the session length for a given IP
+
+Assumptions:
+- frequency distribution of session lengths is normal-like
+
+*/
+
+dump session_stats;
+predicted_session_length = FOREACH session_stats GENERATE avg_session, std_dev_session
 
 
-last_m_samples = FILTER pv_ordered BY time > max_timestamp;
+/*
+
+3. Predict the number of unique URL visits by a given IP [not bound to a session]
+
+Assumptions:
+- frequency distribution of session lengths is normal-like
+
+*/
+
+session_stats = FOREACH (GROUP session_times ALL) {
+  GENERATE
+    AVG(session_times.session_length) as avg_session,
+    SQRT(VAR(session_times.session_length)) as std_dev_session,
+    Median(session_times.session_length) as median_session,
+    Quantile(session_times.session_length) as quantile_session;
+}
+
+
+group_by_session = group pv_sessionized by sessionId;
+url_visits = FOREACH group_by_session {
+	unique_urls = DISTINCT pv_sessionized.url;
+	GENERATE group, COUNT(unique_urls) as page_hits;
+}
+
+ordered_url_visits = ORDER url_visits BY page_hits; -- <== part 3: (ordered) unique URL visits per session
+
+url_stats = FOREACH (GROUP ordered_url_visits ALL) {
+  GENERATE
+    AVG(ordered_url_visits.page_hits) as avg_hits,
+    SQRT(VAR(ordered_url_visits.page_hits)) as std_dev_hits,
+    Median(ordered_url_visits.page_hits) as median_hits;
+}
+
+dump url_stats;
+predicted_unquie_URL_visits = FOREACH url_stats GENERATE avg_hits, std_dev_hits;
