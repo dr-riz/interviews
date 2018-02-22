@@ -36,9 +36,6 @@ DEFINE VAR datafu.pig.VAR();
 
 pv = FOREACH weblog GENERATE ToUnixTime(date_time) as time, REGEX_EXTRACT(client_port, '(.*):(.*)', 1) as memberId, request, url; 
 
--- pv = FOREACH selected GENERATE timestamp as time,visitor_ip as memberId;
-
---pv = FOREACH pv GENERATE time, memberId;
 pv_sessionized = FOREACH (GROUP pv BY memberId) {
   ordered = ORDER pv BY time;
   GENERATE FLATTEN(Sessionize(ordered))
@@ -46,9 +43,9 @@ pv_sessionized = FOREACH (GROUP pv BY memberId) {
 }
 
 dump pv_sessionized;
--- pv_sessionized <== part 1 completed: sessionized web data
+-- pv_sessionized <== part 1: sessionized web data
 
-
+/* to be deleted
 	GENERATE
 
 group_by_ip = group selected by visitor_ip; -- <== required sessions for part 1
@@ -56,6 +53,7 @@ group_by_ip = group selected by visitor_ip; -- <== required sessions for part 1
 -- bonus :-)
 page_count = FOREACH group_by_ip GENERATE group, COUNT(selected.visitor_ip) as page_hits;
 ordered_page_count = ORDER page_count BY page_hits; -- order by hit count for validation
+*/
 
 /* 
 
@@ -63,7 +61,24 @@ ordered_page_count = ORDER page_count BY page_hits; -- order by hit count for va
 
 Assumptions: 
 - a session of a single ip = all page hits during a fixed time window
+
 */
+
+session_times =
+  FOREACH (GROUP pv_sessionized BY (sessionId,memberId)) {
+    GENERATE group.sessionId as sessionId,
+             group.memberId as memberId,
+             (MAX(pv_sessionized.time) - MIN(pv_sessionized.time))
+               / 1000.0 / 60.0 as session_length;
+}
+
+all_group = group session_times all;
+
+avg_session_len = foreach all_group generate AVG(session_times.session_length) as avg_session_duration;
+
+dump avg_session_len; -- <== part 2: average session length
+
+/* to be deleted
 
 min_max_times = FOREACH group_by_ip GENERATE group, MIN(selected.timestamp) as earliest_time, MAX(selected.timestamp) as latest_time;
 
@@ -75,18 +90,23 @@ avg_session_len = foreach all_group generate AVG(delta_times.delta_mins) as avg_
 
 dump avg_session_len; -- <== answer to part 2
 
+*/
 /*
 
 3. Determine unique URL visits per session. To clarify, count a hit to a unique URL only once per session.
 
-Assumptions: 
-- session length includes the entire duration of the log
-
 */
 
-group_by_url = group selected by url;
-url_visits = FOREACH group_by_url GENERATE group, COUNT(selected.url) as page_hits;
-ordered_url_visits = ORDER url_visits BY page_hits; -- <== answer to part 3
+group_by_session = group pv_sessionized by sessionId;
+url_visits = FOREACH group_by_session GENERATE group, pv_sessionized.url, COUNT(pv_sessionized.url) as page_hits;
+
+group_by_session = group pv_sessionized by sessionId;
+url_visits = FOREACH group_by_session {
+	unique_urls = DISTINCT pv_sessionized.url;
+	GENERATE group, COUNT(unique_urls) as page_hits;
+}
+
+ordered_url_visits = ORDER url_visits BY page_hits; -- <== part 3: (ordered) unique URL visits per session
 
 /*
 
