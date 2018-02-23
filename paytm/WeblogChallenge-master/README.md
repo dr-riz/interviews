@@ -4,7 +4,7 @@ As requested, this is a clone from [Paytm Challenge](https://github.com/PaytmLab
 The challenge is to make analytical \[and predictive\] observations about the data using the distributed tools below.
 
 ## Processing & Analytical goals:
-Used [DataFu]()http://datafu.incubator.apache.org/docs/datafu/guide/sessions.html) for Sessionization.
+Used [DataFu]()http://datafu.incubator.apache.org/docs/datafu/guide/sessions.html) for Sessionization. The code is in analyze.pig. I annote the asks below with relevant excerpts from the script.
 
 1. Sessionize the web log by IP. Sessionize = aggregrate all page hits by visitor/IP during a fixed time window.
     https://en.wikipedia.org/wiki/Session_(web_analytics)
