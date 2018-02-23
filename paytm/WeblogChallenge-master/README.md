@@ -4,6 +4,8 @@ As requested, this is a clone from [Paytm Challenge](https://github.com/PaytmLab
 The challenge is to make analytical \[and predictive\] observations about the data using the distributed tools below.
 
 ## Processing & Analytical goals:
+Used [DataFu]()http://datafu.incubator.apache.org/docs/datafu/guide/sessions.html) for Sessionization.
+
 1. Sessionize the web log by IP. Sessionize = aggregrate all page hits by visitor/IP during a fixed time window.
     https://en.wikipedia.org/wiki/Session_(web_analytics)
 
@@ -20,7 +22,7 @@ pv_sessionized: {time: long,memberId: chararray,request: bytearray,url: bytearra
 DESCRIBE session_stats; -- <== part 2: includes average session time
 session_stats: {avg_session: double,std_dev_session: double,median_session: (quantile_0_5: double),quantile_session: (quantile_0_9: double,quantile_0_95: double)}
 DUMP session_stats; 
-(44.39341719679457,..) -- 44m cannot be true as the session time window is 10m?
+(44.39341719679457,..) 
 ```
 
 3. Determine unique URL visits per session. To clarify, count a hit to a unique URL only once per session.
@@ -50,13 +52,13 @@ dump prediction; -- <== part 1: MLE predict the expected load (requests/second)
 
 2. Predict the session length for a given IP [only]
 
-*Discussion: Ask is to predict the session length (regression) given one feature only, namely ip address. My peers actually build a model \[1,2\]. I hold a different view. An ip address is (near) unique. We need features to generalize to train a regression model. For example, received_bytes is a generalizable and a numeric feature. In this example, the intuition is if the size of the request received from the client is large, so will be the session length or duration.
+*Discussion: Ask is to predict the session length (regression) given one feature only, namely ip address. My peers actually build a model \[1,2\]. I hold a different view. An ip address is (near) unique. We need features to generalize to train a regression model. For example, received_bytes is a generalizable and a numeric feature. In this example, the intuition is if the size of the request received from the client is large, so will be the session length or duration.*
 
-*Unless, an ip address is a proxy to a generalizable feature such as population of the city where the traffic is coming from, for example. This merits investigation and left as future work.
+*Unless, an ip address is a proxy to a generalizable feature such as population of the city where the traffic is coming from, for example. This merits investigation and left as future work.*
 
-*Suppose, ip address does not generalize then a simple alternate might be to provide an mean or median value. Even mode works. I augment mean value with standard deviation to provide variance in the prediction.
+*Suppose, ip address does not generalize then a simple alternate might be to provide an mean or median value. Even mode works. I augment mean value with standard deviation to provide variance in the prediction.*
 
-*In my first 100 examples of the provide log (or web_catalog.csv), the mean and median are very different suggesting that the frequency distribution is NOT bell-like. In such cases, median might be a work around or better yet transform the distribution into bell-like shape, also left for future work.
+*In my first 100 examples of the provide log (or web_catalog.csv), the mean and median are very different suggesting that the frequency distribution is NOT bell-like. In such cases, median might be a work around or better yet transform the distribution into bell-like shape, also left for future work.*
 
 > Method: Using session_stats from part (4) of P&A.
 
@@ -94,7 +96,6 @@ dump predicted_unquie_URL_visits;
 - The log file was taken from an AWS Elastic Load Balancer:
 http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/access-log-collection.html#access-log-entry-format
 
-
 ## What are we looking for? What does this prove?
 
 We want to see how you handle:
@@ -104,8 +105,18 @@ We want to see how you handle:
 This is not a pass or fail test, we want to hear about your challenges and your successes with this particular problem.
 
 ## Challenges faced
-- data handling with the syntax of pig latin
-- Unclear purpose of the analytical and prediction exercise as that would have guided the investigation. One possible objective is maximum user engagement.
+- data handling with the syntax of pig latin. 
+
+## Methodology
+- Chose path of least resistance and used Pig (analyze.pig) on my mac with local execution
+- I picked 1st 100 entries from the log (web_log.csv) and analyzed using excel (web_log.xlsx) for the structure and attributes
+- generated handy examples for rapid protytping and validation (random_10_examples.log, random_100_examples.log)
+- Used DataFu \[3\] for sessionzation and statistics
+
+## Future work
+- investigate if ip address represent a proxy of a geographical region and include proxy to build a regression for session length
+- determine the frequency distribution of session and url data
+- repeat the exercise with PySpark
 
 ## References
 1. https://github.com/lawrenceyan/WeblogChallenge
