@@ -1,14 +1,9 @@
-As requested, this is a clone from Paytm challenge with due credits: https://github.com/PaytmLabs/WeblogChallenge
-
-I annotate the tasks with my notes.
-
 # WeblogChallenge
-This is an interview challenge by Paytm Labs. 
+As requested, this is a clone from [Paytm Challenge](https://github.com/PaytmLabs/WeblogChallenge). I annote with my notes. 
 
-The challenge is to make make analytical \[and predictive\] observations about the data using the distributed tools below.
+The challenge is to make analytical \[and predictive\] observations about the data using the distributed tools below.
 
 ## Processing & Analytical goals:
-
 1. Sessionize the web log by IP. Sessionize = aggregrate all page hits by visitor/IP during a fixed time window.
     https://en.wikipedia.org/wiki/Session_(web_analytics)
 
@@ -35,6 +30,14 @@ ordered_url_visits = ORDER url_visits BY page_hits;  -- <== part 3: (ordered) un
 ```
 
 4. Find the most engaged users, ie the IPs with the longest session times
+
+```
+DUMP most_engaged_users; -- <== part 4: ips with the longest session length
+...
+(223.176.170.194,569.4)
+(223.176.171.134,649.6)
+(223.223.143.253,423.3)
+```
 
 ## Additional questions for Machine Learning Engineer (MLE) candidates:
 1. Predict the expected load (requests/second) in the next minute
