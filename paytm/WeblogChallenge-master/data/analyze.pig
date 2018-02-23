@@ -10,9 +10,9 @@ External libs: DataFu
 
 */
 
-register /Users/rmian/Documents/jobs/interviews/paytm/WeblogChallenge-master/data/datafu-pig-incubating-1.3.3.jar
+register datafu-pig-incubating-1.3.3.jar
 
-weblog = LOAD '2015_07_22_mktplace_shop_web_log_sample.log.gz' using PigStorage(' ') as (date_time:datetime, elb,	client_port, backend_port, request_processing_time, backend_processing_time, response_processing_time, elb_status_code, backend_status_code, received_bytes, sent_bytes, request, url, user_agent, ssl_cipher, ssl_protocol);
+weblog = LOAD '2015_07_22_mktplace_shop_web_log_sample.log.gz' using PigStorage(' ') as (date_time:datetime, elb, client_port, backend_port, request_processing_time, backend_processing_time, response_processing_time, elb_status_code, backend_status_code, received_bytes, sent_bytes, request, url, user_agent, ssl_cipher, ssl_protocol);
 
 /* 
 
@@ -40,9 +40,8 @@ pv_sessionized = FOREACH (GROUP pv BY memberId) {
            AS (time,memberId,request, url, sessionId);
 }
 
-L = LIMIT pv_sessionized 3; <== part 1: sessionized web data
-
-dump L; -- remove after development
+L = LIMIT pv_sessionized 3; -- <== part 1: sessionized web data
+dump L;
 
 /* 
 
@@ -61,11 +60,16 @@ session_times =
                / 60.0 as session_length;
 }
 
-all_group = group session_times all;
+session_stats = FOREACH (GROUP session_times ALL) {
+  GENERATE
+    AVG(session_times.session_length) as avg_session,
+    SQRT(VAR(session_times.session_length)) as std_dev_session,
+    Median(session_times.session_length) as median_session,
+    Quantile(session_times.session_length) as quantile_session;
+}
 
-avg_session_len = foreach all_group generate AVG(session_times.session_length) as avg_session_duration;
-
-dump avg_session_len; -- <== part 2: average session length
+DESCRIBE session_stats; -- <== part 2: includes average session time
+DUMP session_stats; 
 
 /*
 
@@ -79,7 +83,7 @@ url_visits = FOREACH group_by_session {
 	GENERATE group, COUNT(unique_urls) as page_hits;
 }
 
-ordered_url_visits = ORDER url_visits BY page_hits; -- <== part 3: (ordered) unique URL visits per session
+ordered_url_visits = ORDER url_visits BY page_hits;  -- <== part 3: (ordered) unique URL visits per session
 
 /*
 
@@ -87,16 +91,7 @@ ordered_url_visits = ORDER url_visits BY page_hits; -- <== part 3: (ordered) uni
 
 */
 
-session_stats = FOREACH (GROUP session_times ALL) {
-  GENERATE
-    AVG(session_times.session_length) as avg_session,
-    SQRT(VAR(session_times.session_length)) as std_dev_session,
-    Median(session_times.session_length) as median_session,
-    Quantile(session_times.session_length) as quantile_session;
-}
-
-long_sessions = FILTER session_times BY
-  session_length > session_stats.quantiles_session.quantile_0_95;
+long_sessions = FILTER session_times BY session_length > session_stats.quantile_session.quantile_0_95;
   
 most_engaged_users = DISTINCT (FOREACH long_sessions GENERATE memberId, session_length);
 DUMP most_engaged_users; -- <== part 4: ips with the longest session length
@@ -111,7 +106,7 @@ Assumptions:
 - the log is in the ascending order of timestamps. By eye balling, the log is loosely follows this assumption.
 - each record in the log represents a request
 
-method: simple time series or running average. average the number of transactions in last some minutes, say 5m, to estimate load next minute
+Method: simple time series or running average. average the number of transactions in last some minutes, say 5, to estimate load next minute
 
 */
 
@@ -146,7 +141,8 @@ Using session_stats from part (4) of P&A.
 */
 
 dump session_stats;
-predicted_session_length = FOREACH session_stats GENERATE avg_session, std_dev_session
+predicted_session_length = FOREACH session_stats GENERATE avg_session, std_dev_session;
+dump predicted_session_length;
 
 /*
 
