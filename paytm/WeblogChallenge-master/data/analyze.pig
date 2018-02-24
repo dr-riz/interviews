@@ -47,9 +47,6 @@ dump L;
 
 2. Determine the average session time
 
-Assumptions: 
-- a session of a single ip = all page hits during a fixed time window
-
 */
 
 session_times =
@@ -103,7 +100,6 @@ Additional questions for Machine Learning Engineer (MLE) candidates:
 1. Predict the expected load (requests/second) in the next minute
 
 Assumptions:
-- the log is in the ascending order of timestamps. By eye balling, the log is loosely follows this assumption.
 - each record in the log represents a request
 
 Method: simple time series or running average. average the number of transactions in last some minutes, say 5, to estimate load next minute
