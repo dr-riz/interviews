@@ -16,7 +16,7 @@ grunt> describe pv_sessionized; -- <== part 1: sessionized web data
 pv_sessionized: {time: long,memberId: chararray,request: bytearray,url: bytearray,sessionId: chararray}
 ```
 
-2. Determine the average session time
+2. Determine the average session time \[in minutes\]
 
 ```
 DESCRIBE session_stats; -- <== part 2: includes average session time
@@ -117,6 +117,10 @@ This is not a pass or fail test, we want to hear about your challenges and your 
 - investigate if ip address represent a proxy of a geographical region and include proxy to build a regression for session length
 - determine the frequency distribution of session and url data
 - repeat the exercise with PySpark
+
+## Releases \[git tags\]
+- myImplWithBasicPig: my first attempt without DataFu
+- paytmSubmission: release submitted to paytm.
 
 ## References
 1. https://github.com/lawrenceyan/WeblogChallenge
