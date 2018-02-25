@@ -1,6 +1,6 @@
 # Amazon 
 
-* My solution with assumptions and methodology are in the attached word doc. I'm not yet the best github formatter *
+**My solution with assumptions and methodology are in the attached word doc. I'm not yet the best github formatter :-) **
 
 ### Problem statement
 The BIA role requires you to be able to analyze large quantities of data and present metrics indicating if Amazon is improving or getting worse in certain areas.  A good example of this is determining if our forecasts match what actually happened. 
