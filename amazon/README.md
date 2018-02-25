@@ -18,14 +18,14 @@ Table: UnitsSold
 
 Sample Data would look like 
 
-| --------- | -------- | ---- | ---------------- |
-| ProductID | Quantity | Date | ForecastOrActual |
-| --------- | -------- | ---- | ---------------- |
-| Widget | 100 | 1-June-2015 | F |
-| Widget | 120 | 1-June-2015 | A |
-| Gizmo | 90 | 1-June-2015 | F | 
-| Gizmo | 80 | 1-June-2015 | A |
-| Doohickey | 200 | 1-June-2015 | A |
+
+| ProductID | Quantity | Date        | ForecastOrActual |
+| --------- | -------- | ----------- | ---------------- |
+| Widget    | 100      | 1-June-2015 | F 				|
+| Widget    | 120      | 1-June-2015 | A 				|
+| Gizmo     | 90       | 1-June-2015 | F 				| 
+| Gizmo     | 80       | 1-June-2015 | A				|
+| Doohickey | 200      | 1-June-2015 | A 				|
 
 ### 1st task
 
