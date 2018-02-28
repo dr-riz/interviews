@@ -1,9 +1,5 @@
 # Rogers
 
-
-Methods
-- changed line ending to mac local
-
 ## Problem Description
 
 “Entity resolution” is the problem of identifying which records in a database represent the same entity. When dealing with user data, it is often difficult to control the quality of the data inputted into the system. The poor quality of the data may be characterized by:
@@ -17,7 +13,7 @@ In this assignment, you are provided with two datasets:
 Each dataset contains the following columns:
 
 | Id[.csvName] | title | author | venue | year | ROW_ID |
-| --------- | -------- | ----------- | --------| ------ |
+| ------------ | ----- | ------ | ------| ---- | ------ |
 
 There are records that reference the same entity across the two datasets.
 
@@ -38,8 +34,28 @@ The first row is provided as an example:
 
 Emphasis will be placed on the method and logic used in resolving the entities, rather than on the final result.
 
+Asks:
+- Your assignment is to resolve the records to their respective entities. A simple consolidation on text matching.
+- 
+
+### Challenges
+unknown charset
+Rizwans-MacBook-Pro:rogers rmian$ file -I DBLP1.csv 
+DBLP1.csv: text/plain; charset=unknown-8bit
+
+author names are also separate by comma
+
+Scope
+- 
+
+Comments:
+- dblp has about 2,600 records
+- scholar has about 64,261 records
 
 
+Methods
+- changed line ending to mac local
+- scope of matching to the title only
 
 
 Questions:
