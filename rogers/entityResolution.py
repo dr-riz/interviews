@@ -48,12 +48,17 @@ with open(dblp_csv, "rb") as ins:
 #print(dblp_pubs) 
 
 print(counter)
+
+num_duplicates=0
 for aRrecord in dblp_pubs:
 	for bRecord in dblp_pubs:
-		if(aRrecord[dblp_author_idx] == bRecord[dblp_author_idx]):
+		if(aRrecord[dblp_author_idx] == bRecord[dblp_author_idx] && \
+			(aRrecord[dblp_title_idx] == bRecord[dblp_title_idx]):
+			num_duplicates+=1
 			print("duplicate with rowids: " + aRrecord[dblp_rowid_dx] + "," + \
 				bRecord[dblp_rowid_dx] + "\n")
 
+print("num_duplicates=" + num_duplicates);
 #i=0;
 #while i in range(len(dblp_pubs)):
 #	i +=1 
