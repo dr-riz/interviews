@@ -2,7 +2,7 @@ import csv
 
 print("Entity Resolution!")
 
-dblp_csv = "DBLP2.csv"
+dblp_csv = "DBLP3.txt"
 scholar_csv = "Scholar.csv"
 db_scholar_csv = "DBLP_Scholar_perfectMapping_RizwanMian.csv"
 hw_csv = "hw.csv"
@@ -31,12 +31,14 @@ with open(dblp_csv, "rb") as ins:
     for line in ins:
     	if (is_ascii(line)):
     		counter+=1
-	    	print(line)
-    	#line.strip()
+    		#print(line)
+    		line = line.decode('ascii').strip()
+	    	publication=line.split('\t')
+	    	dblp_pubs.append(publication)
+	    	#print(publication)
     	#line = line.decode('utf8').strip()
-    	#publication=line.split('\t')
-    	#dblp_pubs.append(publication)
-    	#print(publication)
+
+    	
     	
     	#break
 		#content = [line.strip() for x in line.split(',')]
@@ -46,11 +48,11 @@ with open(dblp_csv, "rb") as ins:
 #print(dblp_pubs) 
 
 print(counter)
-#for aRrecord in dblp_pubs:
-#	for bRecord in dblp_pubs:
-#		if(aRrecord[dblp_author_idx] == bRecord[dblp_author_idx]):
-#			print("duplicate with rowids: " + aRrecord[dblp_rowid_dx] + "," + \
-#				bRecord[dblp_rowid_dx] + "\n")
+for aRrecord in dblp_pubs:
+	for bRecord in dblp_pubs:
+		if(aRrecord[dblp_author_idx] == bRecord[dblp_author_idx]):
+			print("duplicate with rowids: " + aRrecord[dblp_rowid_dx] + "," + \
+				bRecord[dblp_rowid_dx] + "\n")
 
 #i=0;
 #while i in range(len(dblp_pubs)):
