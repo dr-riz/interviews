@@ -73,8 +73,10 @@ def entityResolution(first_list, second_list):
 		for idx, bRecord in enumerate(second_list):
 			try:
 				if((aRrecord[yr_idx] == bRecord[yr_idx]) and \
-					fuzz.ratio(aRrecord[author_idx],bRecord[author_idx]) >= fuzzy_threshold and \
-					fuzz.token_sort_ratio(aRrecord[title_idx],bRecord[title_idx]) >= fuzzy_threshold):
+					#fuzz.ratio(aRrecord[author_idx],bRecord[author_idx]) >= fuzzy_threshold and \
+					#fuzz.token_sort_ratio(aRrecord[title_idx],bRecord[title_idx]) >= fuzzy_threshold):
+					(aRrecord[author_idx] == bRecord[author_idx]) and \
+					(aRrecord[title_idx] == bRecord[title_idx]):
 					num_matches+=1														
 					matched.append(([aRrecord,bRecord]))
 	
@@ -112,10 +114,15 @@ def dedup(pub_list, in_file):
 				a_venue = aRecord[dblp_idx][venue_idx]
 				b_venue = bRecord[dblp_idx][venue_idx]
 				
+#				if((a_rowid != b_rowid) and \
+#					(a_yr == bRecord[dblp_idx][yr_idx]) and \
+#					(fuzz.ratio(a_authors,b_authors) >= fuzzy_threshold) and \
+#					(fuzz.token_sort_ratio(a_title,b_title) >= fuzzy_threshold)):
+					
 				if((a_rowid != b_rowid) and \
 					(a_yr == bRecord[dblp_idx][yr_idx]) and \
-					(fuzz.ratio(a_authors,b_authors) >= fuzzy_threshold) and \
-					(fuzz.token_sort_ratio(a_title,b_title) >= fuzzy_threshold)):
+					(a_authors == b_authors) and \
+					(a_title == b_title)):
 					num_duplicates+=1
 					
 					file_handler.write(a_id + "\t" + a_title + "\t" + \
