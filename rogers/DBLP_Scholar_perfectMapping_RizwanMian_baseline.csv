@@ -48,6 +48,7 @@ journals/sigmod/Huyn01,KNYDz76C_HsJ,179,40404,179_40404
 conf/vldb/CochinwalaB94,Bp69wMYw9DAJ,181,63304,181_63304
 conf/vldb/Lesk94,nL5wl20jB-kJ,192,13723,192_13723
 journals/sigmod/Cardelli01,UYAoi4DYOXUJ,204,8157,204_8157
+conf/vldb/Spaccapietra94,ZpVzTb1a7VoJ,206,17665,206_17665
 journals/sigmod/LeeF01,oUisL_YUScYJ,209,35952,209_35952
 conf/sigmod/FaginKS03,tQZWeE_nsa0J,210,33685,210_33685
 conf/sigmod/ChaudhuriGS03,OFGtGwUHhUQJ,213,11069,213_11069
@@ -59,6 +60,8 @@ conf/vldb/HjelsvoldM94,eyNcyx9rcFwJ,245,23484,245_23484
 journals/sigmod/Stonebraker02,0HMk-YUh4i8J,246,26,246_26
 journals/sigmod/Suciu02,Ikk1rb4o66UJ,248,13104,248_13104
 conf/vldb/XieH94,7P8_zVPEW64J,253,28454,253_28454
+journals/sigmod/KempsterST99,JfmkT9KvKWoJ,262,2647,262_2647
+journals/sigmod/GatziuJSV99,HtqrJuo7GSsJ,264,29992,264_29992
 journals/sigmod/EisenbergM00,4mD1eFCHKKwJ,268,24355,268_24355
 journals/sigmod/BonifatiC00,XCdMiXLp41IJ,282,22936,282_22936
 journals/sigmod/LiefkeS00,N0eowMtIAukJ,283,6852,283_6852
@@ -75,6 +78,7 @@ conf/sigmod/PapadiasTFS03,MkRJhOROQjsJ,317,5601,317_5601
 journals/sigmod/RashidS00,e0GH54HirssJ,339,44136,339_44136
 journals/sigmod/Jhingran00,lrGge6mTVckJ,342,16669,342_16669
 conf/sigmod/ChaudhuriGGM03,H5IdN0_MQw4J,356,37106,356_37106
+journals/sigmod/FengJH01,SUT-QTwqFNkJ,372,57526,372_57526
 conf/sigmod/ZhuS03,hIGjgc6mx0cJ,376,11354,376_11354
 journals/sigmod/PuSW01,nkW4iN6JqfAJ,384,33212,384_33212
 journals/sigmod/MeltzerC98,77mq-gn4LiAJ,390,35294,390_35294
@@ -97,10 +101,12 @@ journals/sigmod/RosenthalS99,c6lzPzSWbKAJ,491,27007,491_27007
 journals/sigmod/RamDD99,uA-E1lBgLe0J,493,38769,493_38769
 journals/sigmod/Libkin99,zSO1Y5W7WkwJ,501,31189,501_31189
 conf/sigmod/BrunoC02,KAf2DUUVabIJ,505,29630,505_29630
+journals/sigmod/Abiteboul99,J_7kZS39msAJ,506,62245,506_62245
 conf/sigmod/Ramanan02,VGe-IBWyMm4J,507,59315,507_59315
 journals/sigmod/MusickC99,mA4kKq9Z3tYJ,510,10204,510_10204
 journals/sigmod/McHughW97,dAnyGPqToQEJ,514,21834,514_21834
 journals/sigmod/AshishK97,rWfbcLnj7_YJ,525,35583,525_35583
+conf/sigmod/DasuJMS02,POt1WbTBB4cJ,530,9640,530_9640
 journals/sigmod/GrayG97,fFCqy9V5XNgJ,531,3293,531_3293
 journals/sigmod/DadamK97,9Ai_9dZChG4J,535,16198,535_16198
 conf/sigmod/TaoP02,fDWfHiQ6BR4J,537,25812,537_25812
@@ -129,8 +135,10 @@ journals/sigmod/ChangASS98,CPzROuDNZqgJ,640,63016,640_63016
 journals/sigmod/BrunieK96,spI2g7jFHuYJ,643,52538,643_52538
 journals/sigmod/HasanFV96,m2CCumFeAWgJ,652,43259,652_43259
 journals/sigmod/Dogac96,url:http://portal.acm.org/citation.cfm%3Fid%3D234889.234900%26dl%3DGUIDE%26dl%3DACM%26idx%3DJ689%26part%3Dperiodical%26WantType%3Dperiodical%26title%3DACM%2520SIGMOD%2520Record%26CFID%3D11111111%26CFTOKEN%3D2222222,654,45732,654_45732
+conf/sigmod/ShahC01,2wGOv6yh4yIJ,655,6248,655_6248
 journals/sigmod/BilirisP96,fu9j50Kk4Y4J,656,1397,656_1397
 journals/sigmod/Colliat96,FP-ribG9oVsJ,659,29173,659_29173
+journals/sigmod/Qian96a,url:http://portal.acm.org/ft_gateway.cfm%3Fid%3D234903%26type%3Dpdf%26dl%3DGUIDE%26dl%3DACM%26CFID%3D11111111%26CFTOKEN%3D2222222,663,46783,663_46783
 conf/sigmod/MistryRSR01,r62IMncHe0IJ,669,56345,669_56345
 journals/sigmod/SilberschatzSU96,_ZsI_bVIJMwJ,674,42509,674_42509
 conf/sigmod/BertinoCF01,JSzfxAgs4pgJ,679,38047,679_38047
@@ -158,6 +166,7 @@ journals/sigmod/Ahlberg96,4bBje8qkHVgJ,752,7056,752_7056
 journals/sigmod/Eisenberg96,tFbkjO2wcFMJ,753,57536,753_57536
 journals/sigmod/Sidell96,url:http://portal.acm.org/ft_gateway.cfm%3Fid%3D245906%26type%3Dpdf%26dl%3DGUIDE%26dl%3DACM%26CFID%3D11111111%26CFTOKEN%3D2222222,759,39375,759_39375
 journals/sigmod/ZobelMR96,6NbNX8nSta0J,763,32491,763_32491
+journals/sigmod/Qian96b,url:http://portal.acm.org/ft_gateway.cfm%3Fid%3D245909%26type%3Dpdf%26dl%3DGUIDE%26dl%3DACM%26CFID%3D11111111%26CFTOKEN%3D2222222,766,3401,766_3401
 conf/sigmod/ChoSG00,ilJdCU_qODkJ,769,26435,769_26435
 journals/sigmod/DogacAOD95,oUOuTMrB0esJ,774,4430,774_4430
 conf/sigmod/WaasG00,xnoCdNeQykAJ,781,56174,781_56174
@@ -185,6 +194,7 @@ journals/sigmod/Fong95,zw3-t-veNvAJ,865,26104,865_26104
 journals/sigmod/Richey95,2p2A5_qGf5cJ,874,21799,874_21799
 journals/sigmod/Wong95,7F9iCGggYVgJ,882,33505,882_33505
 journals/sigmod/Finkelstein95,gbnxN3MpucMJ,892,55049,892_55049
+journals/sigmod/Stacey95,rdXUggm5kg0J,893,62871,893_62871
 conf/sigmod/ChakrabartiM99,Jg81WYtxtZoJ,901,53259,901_53259
 journals/tods/TaoSP03,FBp7oibu4ygJ,902,21139,902_21139
 journals/tods/ChoG03,HqAWyuB11loJ,906,45388,906_45388
@@ -208,6 +218,7 @@ journals/sigmod/Datta94,PPH2NlobSwsJ,969,16538,969_16538
 conf/sigmod/BraumandlKK99,4fjXoCHhe1kJ,971,16696,971_16696
 conf/sigmod/LiuHBPT99,PKQ1dCQIwi0J,974,53253,974_53253
 conf/sigmod/Greer99,oNPjyBZrURgJ,977,47013,977_47013
+journals/sigmod/ChenHKPW94,HTvxhMKB69AJ,979,62735,979_62735
 conf/sigmod/KrishnamurthyBN99,qS4jhfgPbm8J,987,906,987_906
 journals/sigmod/BarclayBGS94,wPhDoeiINQsJ,989,52051,989_52051
 conf/sigmod/Mohan99,XppwYYxOpksJ,991,28174,991_28174
@@ -228,7 +239,9 @@ conf/sigmod/DeutschFS99,QxtGOVsCF78J,1068,33671,1068_33671
 conf/vldb/MaedaT01,dipeGpTdsoQJ,1071,17281,1071_17281
 conf/vldb/MignetMAC01,VaDXNMtPZ4oJ,1089,36294,1089_36294
 conf/vldb/YangG01,xQYKEHCggZQJ,1093,12443,1093_12443
+conf/sigmod/LometW98,F2ecYx97F2sJ,1103,9173,1103_9173
 conf/vldb/Shmueli01,rEwEqoAns-gJ,1110,9611,1110_9611
+conf/vldb/SadriZZA01,89l6j2Mbe2kJ,1111,35453,1111_35453
 conf/sigmod/WhiteCF98,tORqjZEtKvMJ,1112,29693,1112_29693
 conf/vldb/Novaretti01,tZtnFoH5lY0J,1114,23314,1114_23314
 conf/vldb/Draluk01,xQzrilMR-QQJ,1115,15840,1115_15840
@@ -290,7 +303,9 @@ conf/vldb/ChristopheBPV00,8DRB_dYz2CgJ,1400,9720,1400_9720
 conf/vldb/Taylor00,Af_4cNCu3MwJ,1401,11310,1401_11310
 conf/sigmod/GuptaHR97,pGix0qZ6Uz4J,1402,41751,1402_41751
 conf/sigmod/GeorgeH97,Ah9B3bWU0jEJ,1408,37771,1408_37771
+conf/vldb/DeutschPT99,0aJOXauNqYIJ,1412,32462,1412_32462
 conf/vldb/JaedickeM99,zh6yaOX2xiQJ,1413,42791,1413_42791
+conf/sigmod/ZouS96,DYFIQvOg7rgJ,1417,24545,1417_24545
 conf/vldb/GionisIM99,A8rGBQif7MIJ,1418,57168,1418_57168
 conf/sigmod/ZhangRL96,hk9P76dJfcAJ,1420,37933,1420_37933
 conf/sigmod/VanceM96,CMMaMlYwgPkJ,1426,36364,1426_36364
@@ -337,13 +352,16 @@ conf/sigmod/BrinDG95,7mNCkZ7D-R8J,1554,24319,1554_24319
 conf/vldb/RiedelGF98,f2N_DxLirWIJ,1563,5306,1563_5306
 conf/sigmod/Ivinskis95,9FaaDi_zGnEJ,1564,58155,1564_58155
 conf/vldb/Mihalisin98,FuzSLPzjrokJ,1566,22712,1566_22712
+conf/sigmod/Kleissner95,DB8lVC2D9fcJ,1569,5682,1569_5682
 conf/sigmod/Squire95,ery6k1e8h_sJ,1573,27831,1573_27831
+conf/sigmod/Olson95,nJycrIdh5E4J,1575,10765,1575_10765
 conf/vldb/LinR98,9qhYcGzQxC4J,1576,22968,1576_22968
 conf/vldb/MiloZ98,Nd7-CTB1lRgJ,1583,50694,1583_50694
 conf/sigmod/RoussopoulosKV95,efwTNo1wRnMJ,1585,35792,1585_35792
 conf/sigmod/FegarasM95,LSWVPfB8TC4J,1589,50777,1589_50777
 conf/vldb/NipplM98,C5jVmNqIE4IJ,1596,23474,1596_23474
 conf/vldb/IshikawaSF98,D1HCBThHOkcJ,1599,63490,1599_63490
+conf/sigmod/DuSD95,Vl7gY6FsOOYJ,1606,6214,1606_6214
 conf/vldb/Dayal99,url:http://portal.acm.org/citation.cfm%3Fid%3D645925.671502,1607,7276,1607_7276
 conf/sigmod/BhargavaGI95,TXvfEP4WTD0J,1612,59690,1612_59690
 conf/vldb/FlorescuLSY99,aUElZKC-txIJ,1615,9637,1615_9637
@@ -385,6 +403,7 @@ conf/sigmod/DarR94,TtV6gGLQ9NMJ,1740,36637,1740_36637
 conf/sigmod/Vaskevitch94,cr7xWKidCnYJ,1742,46791,1742_46791
 conf/sigmod/GravanoGT94,H6fWl-cSuY4J,1745,31684,1745_31684
 conf/vldb/KornLKF98,ewsBMN0qVa4J,1746,16617,1746_16617
+conf/sigmod/MumickP94,hUQBQ_9ohcgJ,1747,41384,1747_41384
 conf/vldb/ChakrabartiSD98,wnke8ff8hYUJ,1749,33150,1749_33150
 conf/sigmod/Ballinger94,xGGBIZmLvmgJ,1755,50812,1755_50812
 conf/sigmod/BersonGMJ94,bw_c9Mk0_7IJ,1758,29208,1758_29208
@@ -393,6 +412,7 @@ conf/sigmod/TomasicGS94,kRHYZELNeoIJ,1766,34408,1766_34408
 conf/vldb/ArunJ98,1dqeMksCm74J,1767,4308,1767_4308
 conf/vldb/RoussopoulosK98,Mg0A5yz-_wYJ,1779,45161,1779_45161
 conf/sigmod/SeshadriLR94,60I0j0qUHVYJ,1783,55792,1783_55792
+conf/vldb/Mina98,ButmJWjGXusJ,1784,257,1784_257
 conf/vldb/Pogue98,bYLjqg3pPNgJ,1788,10913,1788_10913
 conf/sigmod/Englert94,KOpz_NXJ3WUJ,1794,38348,1794_38348
 conf/vldb/BouganimFV96,TiffIV1Y6AMJ,1795,55717,1795_55717
@@ -402,6 +422,7 @@ conf/sigmod/LaursenOP94,fTbCV3Lh8W0J,1822,24277,1822_24277
 conf/vldb/FaloutsosG96,vwcVawlOJn0J,1824,20899,1824_20899
 conf/vldb/StaudtJ96,6moFnThDHW0J,1829,25283,1829_25283
 journals/sigmod/Snodgrass03c,url:http://portal.acm.org/ft_gateway.cfm%3Fid%3D959062%26type%3Dpdf%26dl%3DGUIDE%26dl%3DACM%26CFID%3D11111111%26CFTOKEN%3D2222222,1837,45364,1837_45364
+journals/sigmod/Date03,y4ZZN4xhKnUJ,1840,54431,1840_54431
 conf/vldb/Mohan96,wYwNJy4GsEYJ,1843,7541,1843_7541
 conf/vldb/Moni96,gbjXwFztQTsJ,1845,62845,1845_62845
 conf/vldb/Sheth96,xoD5vxZQJ8AJ,1848,60167,1848_60167
@@ -436,6 +457,7 @@ conf/vldb/SavasereON95,N-o3NPu-nbIJ,1954,17630,1954_17630
 conf/vldb/HanF95,qNLsbj_Fu5EJ,1955,52097,1955_52097
 conf/vldb/RahmM95,6ioboOxJvQIJ,1958,46315,1958_46315
 conf/vldb/BassiliadesV95,url:http://portal.acm.org/citation.cfm%3Fid%3D673137,1960,35781,1960_35781
+journals/sigmod/Nascimento03,url:http://portal.acm.org/citation.cfm%3Fid%3D776985.776996%26dl%3Dportal%26dl%3DACM%26idx%3D776985%26part%3Dperiodical%26WantType%3Dperiodical%26title%3DACM%2520SIGMOD%2520Record%26CFID%3D11111111%26CFTOKEN%3D2222222,1963,31317,1963_31317
 journals/sigmod/CaleroPR03,zWoRcQffsq8J,1968,37598,1968_37598
 conf/vldb/GuptaHQ95,VCSbj6MwKlgJ,1978,16905,1978_16905
 journals/sigmod/GottlobKP03,rDRdlwdHGb0J,1990,41381,1990_41381
@@ -506,6 +528,7 @@ journals/tods/Chen95,1px2xYEVMzwJ,2250,6268,2250_6268
 journals/tods/Chen95a,qexCEm3QaUgJ,2258,31120,2258_31120
 journals/tods/ShashaLSV95,0aVKzjogLlAJ,2260,61478,2260_61478
 journals/tods/FraternaliT95,8k0tS22xvPcJ,2264,10597,2264_10597
+journals/tods/GuoSW96,V8Ls_TYs6mgJ,2265,26614,2265_26614
 journals/tods/BaralisCP96,6Njy0-27w5cJ,2268,18298,2268_18298
 journals/tods/DeyS96,uZVc1wSi3y4J,2270,32126,2270_32126
 journals/tods/Kuo96,p--jtVlva8AJ,2274,10724,2274_10724
@@ -579,6 +602,7 @@ journals/vldb/PottingerH01,Kv3ZFRUKCogJ,2499,3217,2499_3217
 journals/vldb/Sarawagi01,Xx6kw0tCeQIJ,2500,63000,2500_63000
 journals/vldb/EyalM01,ntrSSBumclMJ,2502,12688,2502_12688
 journals/vldb/PoulovassilisS96,B87s9MFTeZ8J,2506,39602,2506_39602
+journals/vldb/KellerB96,tVoqZpEEHv8J,2510,1499,2510_1499
 journals/vldb/KashyapS96,yWyvTMAVVzwJ,2519,19377,2519_19377
 journals/vldb/AntoshenkovZ96,N8syKKPN6IoJ,2520,51706,2520_51706
 journals/vldb/AbiteboulB95,Pkocuf5hMjYJ,2521,62369,2521_62369
@@ -589,6 +613,7 @@ journals/vldb/CliftonGB95,YkIvdNOC64cJ,2537,57072,2537_57072
 journals/vldb/PapadiasS94,UM0nh_l5epoJ,2543,32556,2543_32556
 journals/vldb/Baumann94,2Yii02idzcUJ,2544,41087,2544_41087
 journals/vldb/PeckhamMD95,zOfVTNgEwz0J,2548,12947,2548_12947
+journals/vldb/DerrMP94,a-QMCFr5yJYJ,2553,36453,2553_36453
 journals/vldb/GeorgakopoulosRL94,G85JsnuAjzMJ,2556,48617,2556_48617
 journals/vldb/Sciore94,qHn6nrbVow8J,2560,27350,2560_27350
 journals/vldb/Bertino94,ylP7n4GU-DQJ,2565,7510,2565_7510

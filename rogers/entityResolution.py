@@ -1,10 +1,13 @@
-print("Entity Resolution!")
-
 import string
 import sys
 # stop words
 from nltk.corpus import stopwords
 stop_words = set(stopwords.words('english'))
+# stemming of words
+from nltk.stem.porter import PorterStemmer
+porter = PorterStemmer()
+
+print("Entity Resolution!")
 
 dblp_tsv = "DBLP1.txt.tsv"
 scholar_tsv = "Scholar.txt.tsv"
@@ -21,30 +24,53 @@ dblp_pubs = []
 scholar_pubs = []
 match_pubs=[]
 
+
 def read_pubs(in_file):
 	pubs = []
+	counter=0
 	table = str.maketrans('', '', string.punctuation)
 	with open(in_file, "rb") as ins:
 		header_line = next(ins) #ignore header
 		for line in ins:
 			line = line.decode('ascii').strip()
 			tokens=line.split('\t')
+			#preprocessing: remove extra white spaces
+			#tokens[title_idx] = " ".join(tokens[title_idx].strip().split())
+			#tokens[author_idx] = " ".join(tokens[author_idx].strip().split())
+			#tokens[venue_idx] = " ".join(tokens[venue_idx].strip().split())
 			#preprocessing: lowercase
 			tokens[title_idx] = tokens[title_idx].lower()
 			tokens[author_idx] = tokens[author_idx].lower()
 			tokens[venue_idx] = tokens[venue_idx].lower()
+			
 			#preprocessing: remove punctuation
+			
 			tokens[title_idx] = tokens[title_idx].translate(table)
 			tokens[author_idx] = tokens[author_idx].translate(table)
-			#preprocessing: remove stop words
+			
+			#preprocessing: remove stop words e.g. 'the’, ‘is’, ‘are'
 			#print(tokens[title_idx])
+			
 			tokens[title_idx] = " ".join([w for w in tokens[title_idx].split(" ") if not w in stop_words])
 			tokens[author_idx] = " ".join([w for w in tokens[author_idx].split(" ") if not w in stop_words])
+			
 			#print(tokens[title_idx])
-			#print("tokens[title_idx]: " + "".join(tokens[title_idx])		    
-			#sys.exit()
+			#print("tokens[title_idx]: " + "".join(tokens[title_idx])
+			
+			#preprocessing: stemming of words e.g. fishing, fished reduce to stem fish
+			#print(tokens[title_idx])			
+						
+			tokens[title_idx] = " ".join([porter.stem(w) for w in tokens[title_idx].split(" ")])	
+			
+			#mylist = [porter.stem(w) for w in tokens[title_idx].split(" ")]
+			#print(mylist)
+			
+			#print(tokens[title_idx])
+			#if(counter==1):
+			#	sys.exit()
 			publication = tokens
 			pubs.append(publication)
+			counter+=1
 	return pubs
 
 def entityResolution(first_list, second_list):

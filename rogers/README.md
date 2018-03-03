@@ -66,10 +66,10 @@ git tag: first_mvp
 
 ### 2nd mvp
 3. advanced preprocessing:
-a. recall baseline: 608 matches + 3 dups
-b. remove punctuation e.g. ".": 621 matches + 3 dups
-c. remove stop words e.g. is, and: 633 matches + 3 dups
-d. stemming, removing stop words, 
+a. recall baseline: 608 matches + 3 dups, under 1m
+b. remove punctuation e.g. ".": 621 matches + 3 dups, 1.5m
+c. remove stop words e.g. is, and: 633 matches + 3 dups, 1.5m
+d. stem words e.g. fishing, fished reduce to stem fish: 640 matches + 3 dups, 2.5m 
  
 4. advanced record matching using employ machine learning methods
 
