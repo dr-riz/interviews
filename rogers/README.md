@@ -43,6 +43,15 @@ Asks:
 - simple record matching across both data with "verbatim" text comparison of fields
 - printing a summary
 
+1. generate readable records
+2. use "verbatim" text comparison of fields:
+a. to detect duplicates
+b. to match across both data with verbatim text comparison of fields
+3. advance record matching using employ machine learning methods
+
+Assumptions:
+- id is unique
+
 ### Challenges
 unknown charset
 Rizwans-MacBook-Pro:rogers rmian$ file -I DBLP1.csv 
@@ -52,11 +61,6 @@ author names are also separate by comma
 
 There is more than 1 way to slice a bread i.e. entity resolution is possible with different methods:
 
-- generate readable records
-1. use "verbatim" text comparison of fields:
-a. to detect duplicates
-b. to match across both data with verbatim text comparison of fields
-2. advance record matching using employ machine learning methods
 
 Scope
 - 

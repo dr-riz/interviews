@@ -65,18 +65,41 @@ with open(dblp_csv, "rb") as ins:
 
 print("publications processed=" + str(readable_records/records*100))
 
+
+dblp_id_idx = 0
+dblp_title_idx = 1
+dblp_author_idx = 2
+dblp_venue_idx = 3
+dblp_yr_idx = 4
+dblp_rowid_dx = 5
+
+dup_records="duplicate_records.tsv"
+file_handler = open(dup_records,'w') 
 num_duplicates=0
+file_handler.write("id \t title \t author \t venue \t year \t rowid \n")
 for aRrecord in dblp_pubs:
 	for bRecord in dblp_pubs:
 		if((aRrecord[dblp_rowid_dx] != bRecord[dblp_rowid_dx]) and \
-			(aRrecord[dblp_yr_idx] == bRecord[dblp_yr_idx]) and \
+			#(aRrecord[dblp_id_idx] == bRecord[dblp_id_idx]) and \
+			#(aRrecord[dblp_yr_idx] == bRecord[dblp_yr_idx]) and \
 			(aRrecord[dblp_author_idx] == bRecord[dblp_author_idx]) and \
 			(aRrecord[dblp_title_idx] == bRecord[dblp_title_idx])):
 			num_duplicates+=1
+					
+			file_handler.write(aRrecord[dblp_id_idx] + "\t" + aRrecord[dblp_title_idx] + "\t" + \
+				aRrecord[dblp_author_idx] + "\t" + aRrecord[dblp_venue_idx] + "\t" + \
+				aRrecord[dblp_yr_idx] + "\t" + aRrecord[dblp_rowid_dx] + "\n")
+				
+			file_handler.write(bRecord[dblp_id_idx] + "\t" + bRecord[dblp_title_idx] + "\t" + \
+				bRecord[dblp_author_idx] + "\t" + bRecord[dblp_venue_idx] + "\t" + \
+				bRecord[dblp_yr_idx] + "\t" + bRecord[dblp_rowid_dx] + "\n")				
+
+print("num_duplicates=" + str(num_duplicates));
+file_handler.close() 			
 			#print("duplicate with rowids: " + aRrecord[dblp_rowid_dx] + "," + \
 			#	bRecord[dblp_rowid_dx])
 
-print("num_duplicates=" + str(num_duplicates));
+
 #i=0;
 #while i in range(len(dblp_pubs)):
 #	i +=1 
@@ -85,12 +108,12 @@ print("num_duplicates=" + str(num_duplicates));
 #    print(colors[i])
 
     
-file = open(db_scholar_csv,'w') 
-header
-file.write('idDBLP,idScholar,DBLP_Match,Scholar_Match,Match_ID\n') 
-file.write(publication[dblp_id_idx] + "," + publication[dblp_id_idx] + "," + \
-	publication[dblp_rowid_dx] + "," + publication[dblp_rowid_dx] + "," + \
-	publication[dblp_rowid_dx] + "_" + publication[dblp_rowid_dx] + "\n")
+#file = open(db_scholar_csv,'w') 
+#header
+#file.write('idDBLP,idScholar,DBLP_Match,Scholar_Match,Match_ID\n') 
+#file.write(publication[dblp_id_idx] + "," + publication[dblp_id_idx] + "," + \
+#	publication[dblp_rowid_dx] + "," + publication[dblp_rowid_dx] + "," + \
+#	publication[dblp_rowid_dx] + "_" + publication[dblp_rowid_dx] + "\n")
 
 
 
