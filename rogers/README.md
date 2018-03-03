@@ -52,7 +52,8 @@ b. match across both data sets
 3. advance record matching using employ machine learning methods
 
 Assumptions:
-- id is unique
+- ID is unique
+- missing ID citation is not checked for duplication 
 
 ### Challenges
 unknown charset
