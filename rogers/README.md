@@ -38,12 +38,25 @@ Asks:
 - Your assignment is to resolve the records to their respective entities. A simple consolidation on text matching.
 - 
 
+### 1st mvp
+
+- simple record matching across both data with "verbatim" text comparison of fields
+- printing a summary
+
 ### Challenges
 unknown charset
 Rizwans-MacBook-Pro:rogers rmian$ file -I DBLP1.csv 
 DBLP1.csv: text/plain; charset=unknown-8bit
 
 author names are also separate by comma
+
+There is more than 1 way to slice a bread i.e. entity resolution is possible with different methods:
+
+- generate readable records
+1. use "verbatim" text comparison of fields:
+a. to detect duplicates
+b. to match across both data with verbatim text comparison of fields
+2. advance record matching using employ machine learning methods
 
 Scope
 - 
@@ -61,4 +74,5 @@ Methods
 Questions:
 - how to deal with special characters?
 
-
+### References
+1. How to Clean Text for Machine Learning with Python: https://machinelearningmastery.com/clean-text-machine-learning-python/

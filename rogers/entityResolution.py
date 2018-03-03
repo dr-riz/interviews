@@ -1,11 +1,17 @@
-import csv
-
 print("Entity Resolution!")
 
-dblp_csv = "DBLP3.txt"
+import string
+import csv
+# stop words
+from nltk.corpus import stopwords
+stop_words = set(stopwords.words('english'))
+# stemming of words
+from nltk.stem.porter import PorterStemmer
+porter = PorterStemmer()
+
+dblp_csv = "DBLP.tsv"
 scholar_csv = "Scholar.csv"
 db_scholar_csv = "DBLP_Scholar_perfectMapping_RizwanMian.csv"
-hw_csv = "hw.csv"
 
 #with open(dblp_fn) as f:
 #    lines = f.readlines()
@@ -25,40 +31,52 @@ def is_ascii(s):
     except UnicodeDecodeError:
         return False
 
-counter=0
-with open(dblp_csv, "rb") as ins:
-    dblp_pubs = []
+# remove punctuation from each word
+print(string.punctuation)
+table = str.maketrans('', '', string.punctuation)
+#print(table)
+
+records=0
+readable_records=0
+dblp_pubs = []
+
+with open(dblp_csv, "rb") as ins:	
     for line in ins:
+    	records += 1
     	if (is_ascii(line)):
-    		counter+=1
-    		#print(line)
+    		readable_records+=1
     		line = line.decode('ascii').strip()
-	    	publication=line.split('\t')
+			#preprocessing: lowercase
+    		line = line.lower()
+	    	tokens=line.split('\t')
+	    	#preprocessing: removed punctuation
+	    	publication = [w.translate(table) for w in tokens]
+	    	#preprocessing: Filter out Stop Words [from the title] e.g. our, it etc.
+#	    	print(publication[dblp_title_idx])
+#	    	publication[dblp_title_idx] = \
+#	    		[w for w in publication[dblp_title_idx] if not w in stop_words]
+ #   		print(publication[dblp_title_idx])
+	    	#preprocessing: stemming of words e.g. fishing, fished reduce to stem fish
+#	    	print(publication[dblp_title_idx])
+#	    	publication[dblp_title_idx] = \
+#	    		[porter.stem(w) for w in publication[dblp_title_idx]]	
+#	    	print(publication[dblp_title_idx])
 	    	dblp_pubs.append(publication)
-	    	#print(publication)
-    	#line = line.decode('utf8').strip()
 
-    	
-    	
-    	#break
-		#content = [line.strip() for x in line.split(',')]
-        #print content
-        #break
-        #array.append(line)
-#print(dblp_pubs) 
-
-print(counter)
+print("publications processed=" + str(readable_records/records*100))
 
 num_duplicates=0
 for aRrecord in dblp_pubs:
 	for bRecord in dblp_pubs:
-		if(aRrecord[dblp_author_idx] == bRecord[dblp_author_idx] && \
-			(aRrecord[dblp_title_idx] == bRecord[dblp_title_idx]):
+		if((aRrecord[dblp_rowid_dx] != bRecord[dblp_rowid_dx]) and \
+			(aRrecord[dblp_yr_idx] == bRecord[dblp_yr_idx]) and \
+			(aRrecord[dblp_author_idx] == bRecord[dblp_author_idx]) and \
+			(aRrecord[dblp_title_idx] == bRecord[dblp_title_idx])):
 			num_duplicates+=1
-			print("duplicate with rowids: " + aRrecord[dblp_rowid_dx] + "," + \
-				bRecord[dblp_rowid_dx] + "\n")
+			#print("duplicate with rowids: " + aRrecord[dblp_rowid_dx] + "," + \
+			#	bRecord[dblp_rowid_dx])
 
-print("num_duplicates=" + num_duplicates);
+print("num_duplicates=" + str(num_duplicates));
 #i=0;
 #while i in range(len(dblp_pubs)):
 #	i +=1 
@@ -67,12 +85,12 @@ print("num_duplicates=" + num_duplicates);
 #    print(colors[i])
 
     
-#file = open(db_scholar_csv,'w') 
-#header
-#file.write('idDBLP,idScholar,DBLP_Match,Scholar_Match,Match_ID\n') 
-#file.write(publication[dblp_id_idx] + "," + publication[dblp_id_idx] + "," + \
-#	publication[dblp_rowid_dx] + "," + publication[dblp_rowid_dx] + "," + \
-#	publication[dblp_rowid_dx] + "_" + publication[dblp_rowid_dx] + "\n")
+file = open(db_scholar_csv,'w') 
+header
+file.write('idDBLP,idScholar,DBLP_Match,Scholar_Match,Match_ID\n') 
+file.write(publication[dblp_id_idx] + "," + publication[dblp_id_idx] + "," + \
+	publication[dblp_rowid_dx] + "," + publication[dblp_rowid_dx] + "," + \
+	publication[dblp_rowid_dx] + "_" + publication[dblp_rowid_dx] + "\n")
 
 
 
@@ -84,3 +102,4 @@ print("num_duplicates=" + num_duplicates);
   #  for line in ins:
    # 	print(line)
         #array.append(line)
+        
