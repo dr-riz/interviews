@@ -55,6 +55,8 @@ Assumptions:
 - ID is unique
 - missing ID citation is not checked for duplication 
 
+only around 20 duplicates in tens of thoudsands of citations. disabling duplicate detection for scholar.
+
 ### Challenges
 unknown charset
 Rizwans-MacBook-Pro:rogers rmian$ file -I DBLP1.csv 

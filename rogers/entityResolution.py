@@ -95,7 +95,7 @@ def dedup(pub_list, in_file):
 def entityResolution(first_list, second_list):
 	out_file=db_scholar_tsv
 	file_handler = open(out_file,"w")
-	file.write('idDBLP,idScholar,DBLP_Match,Scholar_Match,Match_ID\n') 
+	file_handler.write('idDBLP,idScholar,DBLP_Match,Scholar_Match,Match_ID\n') 
 	num_matches=0
 	num_index_errors=0
 	
@@ -103,15 +103,14 @@ def entityResolution(first_list, second_list):
 		for idx, bRecord in enumerate(second_list):
 			try:
 				#print(bRecord)
-				if((aRrecord[rowid_dx] != bRecord[rowid_dx]) and \
-					(aRrecord[yr_idx] == bRecord[yr_idx]) and \
+				if((aRrecord[yr_idx] == bRecord[yr_idx]) and \
 					(aRrecord[author_idx] == bRecord[author_idx]) and \
 					(aRrecord[title_idx] == bRecord[title_idx])):
 					num_matches+=1
 					
-					file.write(publication[id_idx] + "," + publication[id_idx] + "," + \
-						publication[rowid_dx] + "," + publication[rowid_dx] + "," + \
-						publication[rowid_dx] + "_" + publication[rowid_dx] + "\n")
+					file_handler.write(aRrecord[id_idx] + "," + bRecord[id_idx] + "," + \
+						aRrecord[rowid_dx] + "," + bRecord[rowid_dx] + "," + \
+						aRrecord[rowid_dx] + "_" + bRecord[rowid_dx] + "\n")
 
 			except IndexError:
 				num_index_errors+=1
@@ -130,3 +129,4 @@ print("after dedup, len(dblp_pubs)=" + str(len(dblp_pubs)))
 #dedup(scholar_pubs, scholar_tsv)
 #print("after dedup, len(scholar_pubs)=" + str(len(scholar_pubs)))
 
+entityResolution(dblp_pubs,dblp_pubs)
