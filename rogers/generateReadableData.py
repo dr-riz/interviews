@@ -2,7 +2,7 @@ print("generating readable data!\n")
 
 import string
 
-dblp_txt = "DBLP.txt"
+dblp_txt = "DBLP1.txt"
 scholar_txt = "Scholar.txt"
 
 def is_ascii(s):

@@ -9,8 +9,8 @@ stop_words = set(stopwords.words('english'))
 from nltk.stem.porter import PorterStemmer
 porter = PorterStemmer()
 
-dblp_csv = "DBLP.tsv"
-scholar_csv = "Scholar.csv"
+dblp_csv = "DBLP1.txt.tsv"
+scholar_csv = "Scholar.txt.tsv"
 db_scholar_csv = "DBLP_Scholar_perfectMapping_RizwanMian.csv"
 
 #with open(dblp_fn) as f:
@@ -50,7 +50,8 @@ with open(dblp_csv, "rb") as ins:
     		line = line.lower()
 	    	tokens=line.split('\t')
 	    	#preprocessing: removed punctuation
-	    	publication = [w.translate(table) for w in tokens]
+	    	#publication = [w.translate(table) for w in tokens]
+	    	publication = tokens
 	    	#preprocessing: Filter out Stop Words [from the title] e.g. our, it etc.
 #	    	print(publication[dblp_title_idx])
 #	    	publication[dblp_title_idx] = \
@@ -62,7 +63,7 @@ with open(dblp_csv, "rb") as ins:
 #	    		[porter.stem(w) for w in publication[dblp_title_idx]]	
 #	    	print(publication[dblp_title_idx])
 	    	dblp_pubs.append(publication)
-
+#
 print("publications processed=" + str(readable_records/records*100))
 
 
@@ -73,15 +74,15 @@ dblp_venue_idx = 3
 dblp_yr_idx = 4
 dblp_rowid_dx = 5
 
+print("len(dblp_pubs)=" + str(len(dblp_pubs)))
 dup_records="duplicate_records.tsv"
-file_handler = open(dup_records,'w') 
+file_handler = open(dup_records,'w')
 num_duplicates=0
 file_handler.write("id \t title \t author \t venue \t year \t rowid \n")
 for aRrecord in dblp_pubs:
-	for bRecord in dblp_pubs:
+	for idx, bRecord in enumerate(dblp_pubs):
 		if((aRrecord[dblp_rowid_dx] != bRecord[dblp_rowid_dx]) and \
-			#(aRrecord[dblp_id_idx] == bRecord[dblp_id_idx]) and \
-			#(aRrecord[dblp_yr_idx] == bRecord[dblp_yr_idx]) and \
+			(aRrecord[dblp_yr_idx] == bRecord[dblp_yr_idx]) and \
 			(aRrecord[dblp_author_idx] == bRecord[dblp_author_idx]) and \
 			(aRrecord[dblp_title_idx] == bRecord[dblp_title_idx])):
 			num_duplicates+=1
@@ -92,9 +93,14 @@ for aRrecord in dblp_pubs:
 				
 			file_handler.write(bRecord[dblp_id_idx] + "\t" + bRecord[dblp_title_idx] + "\t" + \
 				bRecord[dblp_author_idx] + "\t" + bRecord[dblp_venue_idx] + "\t" + \
-				bRecord[dblp_yr_idx] + "\t" + bRecord[dblp_rowid_dx] + "\n")				
+				bRecord[dblp_yr_idx] + "\t" + bRecord[dblp_rowid_dx] + "\n")
+			
+			#remove duplicate from the list
+			del dblp_pubs[idx]
 
-print("num_duplicates=" + str(num_duplicates));
+print("num_duplicates=" + str(num_duplicates))
+print("len(dblp_pubs)=" + str(len(dblp_pubs)))
+
 file_handler.close() 			
 			#print("duplicate with rowids: " + aRrecord[dblp_rowid_dx] + "," + \
 			#	bRecord[dblp_rowid_dx])

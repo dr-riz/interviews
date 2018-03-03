@@ -44,9 +44,11 @@ Asks:
 - printing a summary
 
 1. generate readable records
-2. use "verbatim" text comparison of fields:
-a. to detect duplicates
-b. to match across both data with verbatim text comparison of fields
+2. use "verbatim" text comparison of fields to:
+a. detect duplicates and store them in a file for validation
+b. match across both data sets
+
+### 2nd mvp
 3. advance record matching using employ machine learning methods
 
 Assumptions:
