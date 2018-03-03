@@ -27,6 +27,7 @@ table = str.maketrans('', '', string.punctuation)
 
 dblp_pubs = []
 scholar_pubs = []
+match_pubs=[]
 
 def read_pubs(in_file):
 	pubs = []
@@ -52,6 +53,36 @@ def read_pubs(in_file):
 			pubs.append(publication)
 	return pubs
 
+
+def entityResolution(first_list, second_list):
+	num_matches=0
+	num_index_errors=0
+	matched = []
+	for aRrecord in first_list:
+		for idx, bRecord in enumerate(second_list):
+			try:
+				#print(bRecord)
+				if((aRrecord[yr_idx] == bRecord[yr_idx]) and \
+					(aRrecord[author_idx] == bRecord[author_idx]) and \
+					(aRrecord[title_idx] == bRecord[title_idx])):
+					num_matches+=1
+														
+					matched.append(([aRrecord,bRecord]))
+						
+				    #print match idx in the 2nd list
+					#print("match: " + str(idx))
+
+			except IndexError:
+				num_index_errors+=1
+				continue
+	
+	print("num_matches=" + str(num_matches))
+	print("num_index_errors=" + str(num_index_errors))
+	return matched
+
+dblp_idx=0
+scholar_idx=1
+
 def dedup(pub_list, in_file):
 	print("before dedup, len(pub_list)=" + str(len(pub_list)))
 	out_file=in_file + "_dups.tsv"	
@@ -64,22 +95,22 @@ def dedup(pub_list, in_file):
 		for idx, bRecord in enumerate(pub_list):
 			try:
 				#print(bRecord)
-				if((aRrecord[rowid_dx] != bRecord[rowid_dx]) and \
-					(aRrecord[yr_idx] == bRecord[yr_idx]) and \
-					(aRrecord[author_idx] == bRecord[author_idx]) and \
-					(aRrecord[title_idx] == bRecord[title_idx])):
+				if((aRrecord[dblp_idx][rowid_dx] != bRecord[dblp_idx][rowid_dx]) and \
+					(aRrecord[dblp_idx][yr_idx] == bRecord[dblp_idx][yr_idx]) and \
+					(aRrecord[dblp_idx][author_idx] == bRecord[dblp_idx][author_idx]) and \
+					(aRrecord[dblp_idx][title_idx] == bRecord[dblp_idx][title_idx])):
 					num_duplicates+=1
 					
-					file_handler.write(aRrecord[id_idx] + "\t" + aRrecord[title_idx] + "\t" + \
-						aRrecord[author_idx] + "\t" + aRrecord[venue_idx] + "\t" + \
-						aRrecord[yr_idx] + "\t" + aRrecord[rowid_dx] + "\n")
+					file_handler.write(aRrecord[dblp_idx][id_idx] + "\t" + aRrecord[dblp_idx][title_idx] + "\t" + \
+						aRrecord[dblp_idx][author_idx] + "\t" + aRrecord[dblp_idx][venue_idx] + "\t" + \
+						aRrecord[dblp_idx][yr_idx] + "\t" + aRrecord[dblp_idx][rowid_dx] + "\n")
 				
-					file_handler.write(bRecord[id_idx] + "\t" + bRecord[title_idx] + "\t" + \
-						bRecord[author_idx] + "\t" + bRecord[venue_idx] + "\t" + \
-						bRecord[yr_idx] + "\t" + bRecord[rowid_dx] + "\n")
+					file_handler.write(bRecord[dblp_idx][id_idx] + "\t" + bRecord[dblp_idx][title_idx] + "\t" + \
+						bRecord[dblp_idx][author_idx] + "\t" + bRecord[dblp_idx][venue_idx] + "\t" + \
+						bRecord[dblp_idx][yr_idx] + "\t" + bRecord[dblp_idx][rowid_dx] + "\n")
 			
 					#remove duplicate from the list
-					print("deleting: " + str(idx))
+					#print("deleting: " + str(idx))
 					del pub_list[idx]
 			except IndexError:
 				num_index_errors+=1
@@ -90,43 +121,29 @@ def dedup(pub_list, in_file):
 	print("num_index_errors=" + str(num_index_errors))
 	print("for validation/reference, duplicates stored in " + out_file)
 	file_handler.close()
+	return pub_list
 
 
-def entityResolution(first_list, second_list):
-	out_file=db_scholar_tsv
-	file_handler = open(out_file,"w")
-	file_handler.write('idDBLP,idScholar,DBLP_Match,Scholar_Match,Match_ID\n') 
-	num_matches=0
-	num_index_errors=0
-	
-	for aRrecord in first_list:
-		for idx, bRecord in enumerate(second_list):
-			try:
-				#print(bRecord)
-				if((aRrecord[yr_idx] == bRecord[yr_idx]) and \
-					(aRrecord[author_idx] == bRecord[author_idx]) and \
-					(aRrecord[title_idx] == bRecord[title_idx])):
-					num_matches+=1
-					
-					file_handler.write(aRrecord[id_idx] + "," + bRecord[id_idx] + "," + \
-						aRrecord[rowid_dx] + "," + bRecord[rowid_dx] + "," + \
-						aRrecord[rowid_dx] + "_" + bRecord[rowid_dx] + "\n")
-
-			except IndexError:
-				num_index_errors+=1
-				continue
-	
-	print("num_matches=" + str(num_matches))
-	print("num_index_errors=" + str(num_index_errors))
-	print("entity resolution stored in " + out_file)
-	file_handler.close()
 	
 dblp_pubs = read_pubs(dblp_tsv)	
-dedup(dblp_pubs, dblp_tsv)
-print("after dedup, len(dblp_pubs)=" + str(len(dblp_pubs)))
+scholar_pubs = read_pubs(scholar_tsv)	
 
-#scholar_pubs = read_pubs(scholar_tsv)	
-#dedup(scholar_pubs, scholar_tsv)
+#dedup(scholar_pubs, scholar_tsv) # disabling since only 23 duplicates, and takes a very long time to search
 #print("after dedup, len(scholar_pubs)=" + str(len(scholar_pubs)))
 
-entityResolution(dblp_pubs,dblp_pubs)
+#entityResolution(dblp_pubs,scholar_pubs)
+match_pubs = entityResolution(dblp_pubs,dblp_pubs)
+
+print("before dedup, len(match_pubs)=" + str(len(match_pubs)))
+dedup_pubs = dedup(match_pubs, db_scholar_tsv)
+print("after dedup, len(dedup_pubs)=" + str(len(dedup_pubs)))
+
+
+out_file=db_scholar_tsv
+file_handler = open(out_file,"w")
+file_handler.write('idDBLP,idScholar,DBLP_Match,Scholar_Match,Match_ID\n')
+for match in dedup_pubs:
+	file_handler.write(match[dblp_idx][id_idx] + "," + match[scholar_idx][id_idx] + "," + \
+		match[dblp_idx][rowid_dx] + "," + match[scholar_idx][rowid_dx] + "," + \
+		match[dblp_idx][rowid_dx] + "_" + match[scholar_idx][rowid_dx] + "\n")
+file_handler.close()
