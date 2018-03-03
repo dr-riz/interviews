@@ -46,14 +46,21 @@ Initial assessment:
 - In addition to columns, author names are also separate by comma
 - At times, fields are missing e.g. ID, year
 
+Domain Knowledge:
+- a publication with the same exact title and authors cannot be published at two venues in the same year, and any other year for that matter
+- order of author names matters as it shows the amount of their contribution
+- it is rare to have authors with the same last name with publications with the same title, year and venue
+- both short and long version of venue names are acceptable e.g. VLDB and Very Large Databases. Consequently, two citations using short or long are the same if the other attribute values are same.
+- author names, title and year are usually enough to uniquely identify a publication
+
 ### 1st mvp
 
 1. generate readable records 
-a. saving the file as tsv
-b. using generateReadableData.py to create readable records 
+	- saving the file as tsv
+	- using generateReadableData.py to create readable records 
 2. After minimal preprocessing, use "verbatim" text comparison of fields to:
-a. match across both data sets
-b. detect duplicates and store them in a file for validation
+	- match across both data sets
+	- detect duplicates and store them in a file for validation
 
 Results and Discussion:
 We perform minimal preprocessing without using ML libraries, namely trailing white spaces and lower casing title, author and venue.
@@ -66,12 +73,13 @@ git tag: first_mvp
 
 ### 2nd mvp
 3. advanced preprocessing:
-a. recall baseline: 608 matches + 3 dups, under 1m
-b. remove punctuation e.g. ".": 621 matches + 3 dups, 1.5m
-c. remove stop words e.g. is, and: 633 matches + 3 dups, 1.5m
-d. stem words e.g. fishing, fished reduce to stem fish: 640 matches + 3 dups, 2.5m 
+	- recall baseline: 608 matches + 3 dups, under 1m
+	- remove punctuation e.g. ".": 621 matches + 3 dups, 1.5m
+	- remove stop words e.g. is, and: 633 matches + 3 dups, 1.5m
+	- stem words e.g. fishing, fished reduce to stem fish: 640 matches + 3 dups, 2.5m 
  
 4. advanced record matching using employ machine learning methods
+	- fuzzywuzzy
 
 ### Challenges
 
@@ -87,3 +95,6 @@ Methods
 
 ### References
 1. How to Clean Text for Machine Learning with Python: https://machinelearningmastery.com/clean-text-machine-learning-python/
+2. Fuzzy String Matching in Python: https://marcobonzanini.com/2015/02/25/fuzzy-string-matching-in-python/
+3. When to use which fuzz function to compare 2 strings: https://stackoverflow.com/questions/31806695/when-to-use-which-fuzz-function-to-compare-2-strings
+
