@@ -64,7 +64,7 @@ with open(dblp_csv, "rb") as ins:
 #	    	print(publication[dblp_title_idx])
 	    	dblp_pubs.append(publication)
 #
-print("publications processed=" + str(readable_records/records*100))
+#print("publications processed=" + str(readable_records/records*100))
 
 
 dblp_id_idx = 0
@@ -74,34 +74,42 @@ dblp_venue_idx = 3
 dblp_yr_idx = 4
 dblp_rowid_dx = 5
 
-print("len(dblp_pubs)=" + str(len(dblp_pubs)))
-dup_records="duplicate_records.tsv"
-file_handler = open(dup_records,'w')
-num_duplicates=0
-file_handler.write("id \t title \t author \t venue \t year \t rowid \n")
-for aRrecord in dblp_pubs:
-	for idx, bRecord in enumerate(dblp_pubs):
-		if((aRrecord[dblp_rowid_dx] != bRecord[dblp_rowid_dx]) and \
-			(aRrecord[dblp_yr_idx] == bRecord[dblp_yr_idx]) and \
-			(aRrecord[dblp_author_idx] == bRecord[dblp_author_idx]) and \
-			(aRrecord[dblp_title_idx] == bRecord[dblp_title_idx])):
-			num_duplicates+=1
+
+
+def dedup(pub_list, in_file):
+	print("before dedup, len(pub_list)=" + str(len(pub_list)))
+	out_file=in_file + "_dups.tsv"	
+	file_handler = open(out_file,"w")
+	file_handler.write("id \t title \t author \t venue \t year \t rowid \n")
+	num_duplicates=0
+	
+	for aRrecord in pub_list:
+		for idx, bRecord in enumerate(pub_list):
+			if((aRrecord[dblp_rowid_dx] != bRecord[dblp_rowid_dx]) and \
+				(aRrecord[dblp_yr_idx] == bRecord[dblp_yr_idx]) and \
+				(aRrecord[dblp_author_idx] == bRecord[dblp_author_idx]) and \
+				(aRrecord[dblp_title_idx] == bRecord[dblp_title_idx])):
+				num_duplicates+=1
 					
-			file_handler.write(aRrecord[dblp_id_idx] + "\t" + aRrecord[dblp_title_idx] + "\t" + \
-				aRrecord[dblp_author_idx] + "\t" + aRrecord[dblp_venue_idx] + "\t" + \
-				aRrecord[dblp_yr_idx] + "\t" + aRrecord[dblp_rowid_dx] + "\n")
+				file_handler.write(aRrecord[dblp_id_idx] + "\t" + aRrecord[dblp_title_idx] + "\t" + \
+					aRrecord[dblp_author_idx] + "\t" + aRrecord[dblp_venue_idx] + "\t" + \
+					aRrecord[dblp_yr_idx] + "\t" + aRrecord[dblp_rowid_dx] + "\n")
 				
-			file_handler.write(bRecord[dblp_id_idx] + "\t" + bRecord[dblp_title_idx] + "\t" + \
-				bRecord[dblp_author_idx] + "\t" + bRecord[dblp_venue_idx] + "\t" + \
-				bRecord[dblp_yr_idx] + "\t" + bRecord[dblp_rowid_dx] + "\n")
+				file_handler.write(bRecord[dblp_id_idx] + "\t" + bRecord[dblp_title_idx] + "\t" + \
+					bRecord[dblp_author_idx] + "\t" + bRecord[dblp_venue_idx] + "\t" + \
+					bRecord[dblp_yr_idx] + "\t" + bRecord[dblp_rowid_dx] + "\n")
 			
-			#remove duplicate from the list
-			del dblp_pubs[idx]
+				#remove duplicate from the list
+				del dblp_pubs[idx]
+	
+	print("num_duplicates=" + str(num_duplicates))
+	print("after dedup, len(pub_list)=" + str(len(pub_list)))
+	print("for validation/reference, duplicates stored in " + out_file)
+	file_handler.close()
+	
+dedup(dblp_pubs, dblp_csv)
 
-print("num_duplicates=" + str(num_duplicates))
-print("len(dblp_pubs)=" + str(len(dblp_pubs)))
-
-file_handler.close() 			
+		
 			#print("duplicate with rowids: " + aRrecord[dblp_rowid_dx] + "," + \
 			#	bRecord[dblp_rowid_dx])
 
