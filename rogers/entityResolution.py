@@ -34,37 +34,23 @@ def read_pubs(in_file):
 		for line in ins:
 			line = line.decode('ascii').strip()
 			tokens=line.split('\t')
-			#preprocessing: remove extra white spaces
-			#tokens[title_idx] = " ".join(tokens[title_idx].strip().split())
-			#tokens[author_idx] = " ".join(tokens[author_idx].strip().split())
-			#tokens[venue_idx] = " ".join(tokens[venue_idx].strip().split())
+
 			#preprocessing: lowercase
 			tokens[title_idx] = tokens[title_idx].lower()
 			tokens[author_idx] = tokens[author_idx].lower()
 			tokens[venue_idx] = tokens[venue_idx].lower()
 			
-			#preprocessing: remove punctuation
-			
+			#preprocessing: remove punctuation	
 			tokens[title_idx] = tokens[title_idx].translate(table)
 			tokens[author_idx] = tokens[author_idx].translate(table)
 			
-			#preprocessing: remove stop words e.g. 'the’, ‘is’, ‘are'
-			#print(tokens[title_idx])
-			
+			#preprocessing: remove stop words e.g. 'the’, ‘is’, ‘are'		
 			tokens[title_idx] = " ".join([w for w in tokens[title_idx].split(" ") if not w in stop_words])
 			tokens[author_idx] = " ".join([w for w in tokens[author_idx].split(" ") if not w in stop_words])
-			
-			#print(tokens[title_idx])
-			#print("tokens[title_idx]: " + "".join(tokens[title_idx])
-			
-			#preprocessing: stemming of words e.g. fishing, fished reduce to stem fish
-			#print(tokens[title_idx])			
 						
+			#preprocessing: stemming of words e.g. fishing, fished reduce to stem fish									
 			tokens[title_idx] = " ".join([porter.stem(w) for w in tokens[title_idx].split(" ")])	
-			
-			#mylist = [porter.stem(w) for w in tokens[title_idx].split(" ")]
-			#print(mylist)
-			
+						
 			#print(tokens[title_idx])
 			#if(counter==1):
 			#	sys.exit()
