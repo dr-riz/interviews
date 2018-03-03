@@ -65,7 +65,12 @@ Separately, I checked for duplications in both data sets. There are about 150 an
 git tag: first_mvp
 
 ### 2nd mvp
-3. advanced preprocessing: stemming, removing stop words, punctuation 
+3. advanced preprocessing:
+a. recall baseline: 608 matches + 3 dups
+b. remove punctuation e.g. ".": 621 matches + 3 dups
+c. remove stop words e.g. is, and: 633 matches + 3 dups
+d. stemming, removing stop words, 
+ 
 4. advanced record matching using employ machine learning methods
 
 ### Challenges

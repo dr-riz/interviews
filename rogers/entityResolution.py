@@ -1,6 +1,10 @@
 print("Entity Resolution!")
 
 import string
+import sys
+# stop words
+from nltk.corpus import stopwords
+stop_words = set(stopwords.words('english'))
 
 dblp_tsv = "DBLP1.txt.tsv"
 scholar_tsv = "Scholar.txt.tsv"
@@ -19,6 +23,7 @@ match_pubs=[]
 
 def read_pubs(in_file):
 	pubs = []
+	table = str.maketrans('', '', string.punctuation)
 	with open(in_file, "rb") as ins:
 		header_line = next(ins) #ignore header
 		for line in ins:
@@ -27,7 +32,17 @@ def read_pubs(in_file):
 			#preprocessing: lowercase
 			tokens[title_idx] = tokens[title_idx].lower()
 			tokens[author_idx] = tokens[author_idx].lower()
-			tokens[venue_idx] = tokens[venue_idx].lower()			
+			tokens[venue_idx] = tokens[venue_idx].lower()
+			#preprocessing: remove punctuation
+			tokens[title_idx] = tokens[title_idx].translate(table)
+			tokens[author_idx] = tokens[author_idx].translate(table)
+			#preprocessing: remove stop words
+			#print(tokens[title_idx])
+			tokens[title_idx] = " ".join([w for w in tokens[title_idx].split(" ") if not w in stop_words])
+			tokens[author_idx] = " ".join([w for w in tokens[author_idx].split(" ") if not w in stop_words])
+			#print(tokens[title_idx])
+			#print("tokens[title_idx]: " + "".join(tokens[title_idx])		    
+			#sys.exit()
 			publication = tokens
 			pubs.append(publication)
 	return pubs
