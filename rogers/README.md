@@ -36,52 +36,49 @@ Emphasis will be placed on the method and logic used in resolving the entities, 
 
 Asks:
 - Your assignment is to resolve the records to their respective entities. A simple consolidation on text matching.
-- 
+
+## Solution
+
+Initial assessment: 
+- dblp has about 2,600 records
+- scholar has about 64,261 records
+- While datasets are suffixed by ".csv", they are not plain text ".csv" files. 
+- In addition to columns, author names are also separate by comma
+- At times, fields are missing e.g. ID, year
 
 ### 1st mvp
 
-- simple record matching across both data with "verbatim" text comparison of fields
-- printing a summary
+1. generate readable records 
+a. saving the file as tsv
+b. using generateReadableData.py to create readable records 
+2. After minimal preprocessing, use "verbatim" text comparison of fields to:
+a. match across both data sets
+b. detect duplicates and store them in a file for validation
 
-1. generate readable records
-2. use "verbatim" text comparison of fields to:
-a. detect duplicates and store them in a file for validation
-b. match across both data sets
+Results and Discussion:
+We perform minimal preprocessing without using ML libraries, namely trailing white spaces and lower casing title, author and venue.
+1. generating readable records with 2 steps: (i) saving the file as tsv (e.g. DBLP1.txt), and (ii) using python to create ascii records (e.g. DBLP1.txt.tsv). In this process, about 10% data is lost from both datasets. We'll revisit this loss of data in the next iteration. The new number of records for DBLP and Scholar are about 2,400 and 57,000 respectively. This resets our starting point.
+2. The upper bound on number of matches is equal to the size of records in the smaller data set i.e. DBLP. Therefore, it is faster to first match records and then do data duplication. With this setup, the number of matches are 608 after removing 3 duplications (DBLP_Scholar_perfectMapping_RizwanMian.csv_dups.tsv), stored in DBLP_Scholar_perfectMapping_RizwanMian.csv as requested. These numbers and matches serve as the baseline for advanced preprocessing and text matching.
+
+Separately, I checked for duplications in both data sets. There are about 150 and 20 duplicates in dblp and scholar data sets, respectively.
+
+git tag: first_mvp
 
 ### 2nd mvp
-3. advance record matching using employ machine learning methods
-
-Assumptions:
-- ID is unique
-- missing ID citation is not checked for duplication 
-
-only around 20 duplicates in tens of thoudsands of citations. disabling duplicate detection for scholar.
+3. advanced preprocessing: stemming, removing stop words, punctuation 
+4. advanced record matching using employ machine learning methods
 
 ### Challenges
-unknown charset
-Rizwans-MacBook-Pro:rogers rmian$ file -I DBLP1.csv 
-DBLP1.csv: text/plain; charset=unknown-8bit
-
-author names are also separate by comma
-
-There is more than 1 way to slice a bread i.e. entity resolution is possible with different methods:
-
 
 Scope
 - 
 
-Comments:
-- dblp has about 2,600 records
-- scholar has about 64,261 records
-
-
 Methods
 - changed line ending to mac local
-- scope of matching to the title only
 
+### Outstanding
+- include lost data sets when generating readable records
 
-Questions:
-- how to deal with special characters?
 
 ### References
 1. How to Clean Text for Machine Learning with Python: https://machinelearningmastery.com/clean-text-machine-learning-python/
