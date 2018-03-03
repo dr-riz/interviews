@@ -90,41 +90,43 @@ def dedup(pub_list, in_file):
 	print("num_index_errors=" + str(num_index_errors))
 	print("for validation/reference, duplicates stored in " + out_file)
 	file_handler.close()
+
+
+def entityResolution(first_list, second_list):
+	out_file=db_scholar_tsv
+	file_handler = open(out_file,"w")
+	file.write('idDBLP,idScholar,DBLP_Match,Scholar_Match,Match_ID\n') 
+	num_matches=0
+	num_index_errors=0
 	
-#dblp_pubs = read_pubs(dblp_tsv)	
-#dedup(dblp_pubs, dblp_tsv)
+	for aRrecord in first_list:
+		for idx, bRecord in enumerate(second_list):
+			try:
+				#print(bRecord)
+				if((aRrecord[rowid_dx] != bRecord[rowid_dx]) and \
+					(aRrecord[yr_idx] == bRecord[yr_idx]) and \
+					(aRrecord[author_idx] == bRecord[author_idx]) and \
+					(aRrecord[title_idx] == bRecord[title_idx])):
+					num_matches+=1
+					
+					file.write(publication[id_idx] + "," + publication[id_idx] + "," + \
+						publication[rowid_dx] + "," + publication[rowid_dx] + "," + \
+						publication[rowid_dx] + "_" + publication[rowid_dx] + "\n")
+
+			except IndexError:
+				num_index_errors+=1
+				continue
+	
+	print("num_matches=" + str(num_matches))
+	print("num_index_errors=" + str(num_index_errors))
+	print("entity resolution stored in " + out_file)
+	file_handler.close()
+	
+dblp_pubs = read_pubs(dblp_tsv)	
+dedup(dblp_pubs, dblp_tsv)
 print("after dedup, len(dblp_pubs)=" + str(len(dblp_pubs)))
 
-scholar_pubs = read_pubs(scholar_tsv)	
-dedup(scholar_pubs, scholar_tsv)
-		
-			#print("duplicate with rowids: " + aRrecord[rowid_dx] + "," + \
-			#	bRecord[rowid_dx])
+#scholar_pubs = read_pubs(scholar_tsv)	
+#dedup(scholar_pubs, scholar_tsv)
+#print("after dedup, len(scholar_pubs)=" + str(len(scholar_pubs)))
 
-
-#i=0;
-#while i in range(len(dblp_pubs)):
-#	i +=1 
-#	j = i
-#	while j
-#    print(colors[i])
-
-    
-#file = open(db_scholar_tsv,'w') 
-#header
-#file.write('idDBLP,idScholar,DBLP_Match,Scholar_Match,Match_ID\n') 
-#file.write(publication[id_idx] + "," + publication[id_idx] + "," + \
-#	publication[rowid_dx] + "," + publication[rowid_dx] + "," + \
-#	publication[rowid_dx] + "_" + publication[rowid_dx] + "\n")
-
-
-
-
-#file.close() 
-        
-#with open(dblp_fn, "rb") as ins:
- #   array = []
-  #  for line in ins:
-   # 	print(line)
-        #array.append(line)
-        
