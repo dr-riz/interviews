@@ -135,44 +135,38 @@ def dedup(pub_list, fuzzy_threshold):
 				a_rowid = aRecord[dblp_idx][rowid_dx]
 				b_rowid = bRecord[dblp_idx][rowid_dx]
 				
-				a_authors = aRecord[dblp_idx][author_idx]
-				b_authors = bRecord[dblp_idx][author_idx]
-				a_title = aRecord[dblp_idx][title_idx]
-				b_title = bRecord[dblp_idx][title_idx]
+				#a_authors = aRecord[dblp_idx][author_idx]
+				#b_authors = bRecord[dblp_idx][author_idx]
+				#a_title = aRecord[dblp_idx][title_idx]
+				#b_title = bRecord[dblp_idx][title_idx]
 				
-#				if((a_yr == b_yr) and \
-#					(a_rowid != b_rowid) and \
-#					(a_authors == b_authors) and \
-#					(a_title == b_title)):
-							
+#				if((a_yr == b_yr) and (a_rowid != b_rowid) and (a_authors == b_authors) and (a_title == b_title)):
+#					if(True):
+
 				if((a_yr == b_yr) and (a_rowid != b_rowid)):
-					#a_authors = aRecord[dblp_idx][author_idx]
-					#b_authors = bRecord[dblp_idx][author_idx]
-					#a_title = aRecord[dblp_idx][title_idx]
-					#b_title = bRecord[dblp_idx][title_idx]
+					a_authors = aRecord[dblp_idx][author_idx]
+					b_authors = bRecord[dblp_idx][author_idx]
+					a_title = aRecord[dblp_idx][title_idx]
+					b_title = bRecord[dblp_idx][title_idx]
 				
-					#if(a_authors!="" or b_authors!=""):
-					#	author_ratio=fuzz.ratio(a_authors,b_authors)
-					#else:
-					#	author_ratio=100		
+					if(a_authors!="" or b_authors!=""):
+						author_ratio=fuzz.ratio(a_authors,b_authors)
+					else:
+						author_ratio=100		
 				
-					#title_ratio=fuzz.token_sort_ratio(a_title,b_title)
+					title_ratio=fuzz.token_sort_ratio(a_title,b_title)
 				
-					#if((author_ratio >= fuzzy_threshold) and \
-					#	(title_ratio >= fuzzy_threshold)):
-					if((a_authors == b_authors) and (a_title == b_title)):
+					if((author_ratio >= fuzzy_threshold) and \
+						(title_ratio >= fuzzy_threshold)):
+					#if((a_authors == b_authors) and (a_title == b_title)):
+
+					#if((a_authors == b_authors) and (a_title == b_title)):
 						num_duplicates+=1						
 						a_id = aRecord[dblp_idx][id_idx]
 						b_id = bRecord[dblp_idx][id_idx]
 						a_venue = aRecord[dblp_idx][venue_idx]
 						b_venue = bRecord[dblp_idx][venue_idx]
 						
-					
-#				if((a_rowid != b_rowid) and \
-#					(a_yr == bRecord[dblp_idx][yr_idx]) and \
-#					(a_authors == b_authors) and \
-#					(a_title == b_title)):
-
 					
 						file_handler.write(a_id + "\t" + a_title + "\t" + \
 							a_authors + "\t" + a_venue + "\t" + \
@@ -190,13 +184,13 @@ def dedup(pub_list, fuzzy_threshold):
 							b_yr + "\t" + b_rowid + "\t" )
 					
 						file_handler.write(bRecord[scholar_idx][id_idx] + "\t" + \
-						bRecord[scholar_idx][title_idx] + "\t" + \
-						bRecord[scholar_idx][author_idx] + "\t" + \
-						bRecord[scholar_idx][venue_idx] + "\t" + \
-						bRecord[scholar_idx][yr_idx] + "\t" + \
-						bRecord[scholar_idx][rowid_dx] + "\n")
+							bRecord[scholar_idx][title_idx] + "\t" + \
+							bRecord[scholar_idx][author_idx] + "\t" + \
+							bRecord[scholar_idx][venue_idx] + "\t" + \
+							bRecord[scholar_idx][yr_idx] + "\t" + \
+							bRecord[scholar_idx][rowid_dx] + "\n")
 			
-					del pub_list[idx]
+						del pub_list[idx]
 			except IndexError:
 				num_index_errors+=1
 				continue
@@ -231,11 +225,11 @@ final_pubs = []
 out_file="stats.csv"
 file_handler = open(out_file,"w")
 file_handler.write('fuzzy_treshold,matches,duplicates,exec_time_m\n')
-for threshold in range(100, 60, -10):
+for threshold in range(100, 70, -10):
 	print("starting with fuzzy_threshold=" + str(threshold))
 	start = time.time()
-	#matches, match_pubs = entityResolution(dblp_pubs,scholar_pubs, threshold)
-	matches, match_pubs = entityResolution(dblp_pubs,dblp_pubs, threshold)	
+	matches, match_pubs = entityResolution(dblp_pubs,scholar_pubs, threshold)
+	#matches, match_pubs = entityResolution(dblp_pubs,dblp_pubs, threshold)	
 	dups, dedup_pubs = dedup(match_pubs, threshold)
 	final_pubs = dedup_pubs
 	end = time.time()

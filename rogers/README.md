@@ -74,7 +74,7 @@ We perform minimal preprocessing without using ML libraries, namely trailing whi
 1. generating readable records with 2 steps: (i) saving the file as tsv (e.g. DBLP1.txt), and (ii) using python to create ascii records (e.g. DBLP1.txt.tsv). In this process, about 10% data is lost from both datasets. We'll revisit this loss of data in the next iteration. The new number of records for DBLP and Scholar are about 2,400 and 57,000 respectively. This resets our starting point.
 2. The upper bound on number of matches is equal to the size of records in the smaller data set i.e. DBLP. Therefore, it is faster to first match records and then do data duplication. With this setup, the number of matches are 608 after removing 3 duplications (DBLP_Scholar_perfectMapping_RizwanMian.csv_dups.tsv), stored in DBLP_Scholar_perfectMapping_RizwanMian.csv as requested. These numbers and matches serve as the baseline for advanced preprocessing and text matching.
 
-Separately, I checked for duplications in both data sets. There are about 150 and 20 duplicates in dblp and scholar data sets, respectively.
+Separately, I checked for duplications in both data sets using the script under development. There are about 150 and 20 duplicates in dblp and scholar data sets, respectively.
 
 git tag: first_mvp
 
@@ -86,7 +86,7 @@ git tag: first_mvp
 Results and Discussion:
 3. Tabling the improved matching after each preprocessing step
 
-| (cumulative) preprocessing   | matches(#) | duplicates(#) | runtime(m) |
+| preprocessing (cumulative)   | matches(#) | duplicates(#) | runtime(m) |
 | ---------------------------- | ---------- | ------------- | ---------- | 
 | first_mvp (baseline)         | 608   		| 3      		| 1          |
 | remove punctuation e.g. "."  | 621   		| 3 			| 1.5 		 |
