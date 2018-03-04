@@ -12,10 +12,11 @@ from fuzzywuzzy import fuzz
 print("Entity Resolution!")
 
 dblp_tsv = "DBLP1.txt.tsv"
+#dblp_tsv = "debug.tsv"
 scholar_tsv = "Scholar.txt.tsv"
 db_scholar_tsv = "DBLP_Scholar_perfectMapping_RizwanMian.csv"
 
-fuzzy_threshold = 100
+fuzzy_threshold = 99
 
 id_idx = 0
 title_idx = 1
@@ -44,12 +45,16 @@ def read_pubs(in_file):
 			tokens[author_idx] = tokens[author_idx].lower()
 			tokens[venue_idx] = tokens[venue_idx].lower()
 			
+			#print("tokens[author_idx]=" + " ".join(tokens[author_idx]))
+			
 			#preprocessing: remove punctuation	
 			tokens[title_idx] = tokens[title_idx].translate(table)
 			tokens[author_idx] = tokens[author_idx].translate(table)
 			
 			# remove author initials (up to 2 alphabets) from author names
 			tokens[author_idx] = " ".join([w for w in tokens[author_idx].split(" ") if len(w) > 2])
+
+			#print("tokens[author_idx]=" + " ".join(tokens[author_idx]))
 			
 			# preprocessing: remove stop words e.g. 'the’, ‘is’, ‘are' from title		
 			tokens[title_idx] = " ".join([w for w in tokens[title_idx].split(" ") if not w in stop_words])			
@@ -68,23 +73,47 @@ def read_pubs(in_file):
 def entityResolution(first_list, second_list):
 	num_matches=0
 	num_index_errors=0
+	counter=0
 	matched = []
-	for aRrecord in first_list:
+	out_file="matched.tsv"
+	file_handler = open(out_file,"w")
+	file_handler.write("did \t dtitle \t dauthor \t dvenue \t dyear \t drowid\n")	
+	for aRecord in first_list:
 		for idx, bRecord in enumerate(second_list):
 			try:
-				if((aRrecord[yr_idx] == bRecord[yr_idx]) and \
-					#fuzz.ratio(aRrecord[author_idx],bRecord[author_idx]) >= fuzzy_threshold and \
-					#fuzz.token_sort_ratio(aRrecord[title_idx],bRecord[title_idx]) >= fuzzy_threshold):
-					(aRrecord[author_idx] == bRecord[author_idx]) and \
-					(aRrecord[title_idx] == bRecord[title_idx]):
+				counter+=1
+				#if(counter==4):
+				#	sys.exit()
+									
+				#print("aRecord=" + ",".join(aRecord))
+				#print("bRecord=" + ",".join(bRecord))
+				
+				a_authors=aRecord[author_idx]
+				b_authors=bRecord[author_idx]
+				
+				if(a_authors!="" or b_authors!=""):
+					author_ratio=fuzz.ratio(a_authors,b_authors)
+				else:
+					author_ratio=100					
+										
+				title_ratio=fuzz.token_sort_ratio(aRecord[title_idx],bRecord[title_idx])
+				#print("author_ratio,title_Ratio=" + str(author_ratio) + "," + str(title_ratio))
+				if((aRecord[yr_idx] == bRecord[yr_idx]) and \
+					author_ratio >= fuzzy_threshold and \
+					title_ratio >= fuzzy_threshold):
+					#(aRecord[author_idx] == bRecord[author_idx]) and \
+					#(aRecord[title_idx] == bRecord[title_idx])):
 					num_matches+=1														
-					matched.append(([aRrecord,bRecord]))
-	
+					matched.append(([aRecord,bRecord]))
+				
+					file_handler.write("\t".join(aRecord) + "\n")
+					file_handler.write("\t".join(bRecord) + "\n")
 			except IndexError:
 				num_index_errors+=1
 				continue
 	print("num_matches=" + str(num_matches))
 	print("num_index_errors=" + str(num_index_errors))
+	file_handler.close()
 	return matched
 
 dblp_idx=0
@@ -114,15 +143,22 @@ def dedup(pub_list, in_file):
 				a_venue = aRecord[dblp_idx][venue_idx]
 				b_venue = bRecord[dblp_idx][venue_idx]
 				
-#				if((a_rowid != b_rowid) and \
-#					(a_yr == bRecord[dblp_idx][yr_idx]) and \
-#					(fuzz.ratio(a_authors,b_authors) >= fuzzy_threshold) and \
-#					(fuzz.token_sort_ratio(a_title,b_title) >= fuzzy_threshold)):
-					
+				if(a_authors!="" or b_authors!=""):
+					author_ratio=fuzz.ratio(a_authors,b_authors)
+				else:
+					author_ratio=100		
+				
+				title_ratio=fuzz.token_sort_ratio(a_title,b_title)
+				
 				if((a_rowid != b_rowid) and \
 					(a_yr == bRecord[dblp_idx][yr_idx]) and \
-					(a_authors == b_authors) and \
-					(a_title == b_title)):
+					(author_ratio >= fuzzy_threshold) and \
+					(title_ratio >= fuzzy_threshold)):
+					
+#				if((a_rowid != b_rowid) and \
+#					(a_yr == bRecord[dblp_idx][yr_idx]) and \
+#					(a_authors == b_authors) and \
+#					(a_title == b_title)):
 					num_duplicates+=1
 					
 					file_handler.write(a_id + "\t" + a_title + "\t" + \
@@ -155,7 +191,7 @@ def dedup(pub_list, in_file):
 
 
 dblp_pubs = read_pubs(dblp_tsv)	
-scholar_pubs = read_pubs(scholar_tsv)	
+#scholar_pubs = read_pubs(scholar_tsv)	
 #match_pubs = entityResolution(dblp_pubs,scholar_pubs)
 match_pubs = entityResolution(dblp_pubs,dblp_pubs)
 dedup_pubs = dedup(match_pubs, db_scholar_tsv)
