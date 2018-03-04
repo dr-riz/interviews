@@ -13,7 +13,6 @@ from fuzzywuzzy import fuzz
 print("Entity Resolution!")
 
 dblp_tsv = "DBLP1.txt.tsv"
-#dblp_tsv = "debug.tsv"
 scholar_tsv = "Scholar.txt.tsv"
 db_scholar_tsv = "DBLP_Scholar_perfectMapping_RizwanMian.csv"
 
@@ -23,9 +22,6 @@ author_idx = 2
 venue_idx = 3
 yr_idx = 4
 rowid_dx = 5
-
-
-
 
 def read_pubs(in_file):
 	print("reading and preprocessing: " + in_file)
@@ -42,17 +38,13 @@ def read_pubs(in_file):
 			tokens[title_idx] = tokens[title_idx].lower()
 			tokens[author_idx] = tokens[author_idx].lower()
 			tokens[venue_idx] = tokens[venue_idx].lower()
-			
-			#print("tokens[author_idx]=" + " ".join(tokens[author_idx]))
-			
+						
 			#preprocessing: remove punctuation	
 			tokens[title_idx] = tokens[title_idx].translate(table)
 			tokens[author_idx] = tokens[author_idx].translate(table)
 			
 			# remove author initials (up to 2 alphabets) from author names
 			tokens[author_idx] = " ".join([w for w in tokens[author_idx].split(" ") if len(w) > 2])
-
-			#print("tokens[author_idx]=" + " ".join(tokens[author_idx]))
 			
 			# preprocessing: remove stop words e.g. 'the’, ‘is’, ‘are' from title		
 			tokens[title_idx] = " ".join([w for w in tokens[title_idx].split(" ") if not w in stop_words])			
@@ -60,9 +52,6 @@ def read_pubs(in_file):
 			# preprocessing: stemming of words e.g. fishing, fished reduce to stem fish									
 			tokens[title_idx] = " ".join([porter.stem(w) for w in tokens[title_idx].split(" ")])	
 						
-			#print(tokens[author_idx])
-			#if(counter==4):
-				#sys.exit()
 			publication = tokens
 			pubs.append(publication)
 			counter+=1
@@ -77,7 +66,7 @@ def entityResolution(first_list, second_list, fuzzy_threshold):
 	out_file="matched.tsv"
 	file_handler = open(out_file,"a")
 	file_handler.write("fuzzy_threshold=" + str(fuzzy_threshold) + "\n")
-	file_handler.write("did \t dtitle \t dauthor \t dvenue \t dyear \t drowid\n")	
+	file_handler.write("id \t title \t author \t venue \t year \t rowid\n")	
 	for aRecord in first_list:
 		for idx, bRecord in enumerate(second_list):
 			counter+=1
@@ -105,10 +94,6 @@ def entityResolution(first_list, second_list, fuzzy_threshold):
 			except IndexError:
 				num_index_errors+=1
 				continue
-		#print("entityResolution: (cross checks, matches) so far =(" + \
-		#	str(counter) + "," + str(num_matches) + ")")
-	#print("num_matches=" + str(num_matches))
-	#print("num_index_errors=" + str(num_index_errors))
 	file_handler.close()
 	return num_matches, matched
 
@@ -116,7 +101,6 @@ dblp_idx=0
 scholar_idx=1
 
 def dedup(pub_list, fuzzy_threshold):
-	#print("before dedup, len(pub_list)=" + str(len(pub_list)))
 	print("dedup with fuzzy_threshold=" + str(fuzzy_threshold))
 	out_file="duplicates.tsv"	
 	file_handler = open(out_file,"a")
@@ -133,15 +117,7 @@ def dedup(pub_list, fuzzy_threshold):
 				a_yr = aRecord[dblp_idx][yr_idx]
 				b_yr = bRecord[dblp_idx][yr_idx]
 				a_rowid = aRecord[dblp_idx][rowid_dx]
-				b_rowid = bRecord[dblp_idx][rowid_dx]
-				
-				#a_authors = aRecord[dblp_idx][author_idx]
-				#b_authors = bRecord[dblp_idx][author_idx]
-				#a_title = aRecord[dblp_idx][title_idx]
-				#b_title = bRecord[dblp_idx][title_idx]
-				
-#				if((a_yr == b_yr) and (a_rowid != b_rowid) and (a_authors == b_authors) and (a_title == b_title)):
-#					if(True):
+				b_rowid = bRecord[dblp_idx][rowid_dx]				
 
 				if((a_yr == b_yr) and (a_rowid != b_rowid)):
 					a_authors = aRecord[dblp_idx][author_idx]
@@ -158,9 +134,6 @@ def dedup(pub_list, fuzzy_threshold):
 				
 					if((author_ratio >= fuzzy_threshold) and \
 						(title_ratio >= fuzzy_threshold)):
-					#if((a_authors == b_authors) and (a_title == b_title)):
-
-					#if((a_authors == b_authors) and (a_title == b_title)):
 						num_duplicates+=1						
 						a_id = aRecord[dblp_idx][id_idx]
 						b_id = bRecord[dblp_idx][id_idx]
@@ -194,12 +167,6 @@ def dedup(pub_list, fuzzy_threshold):
 			except IndexError:
 				num_index_errors+=1
 				continue
-		#print("dedup: (cross checks, matches) so far =(" + \
-		#	str(counter) + "," + str(num_matches) + ")")
-	#print("num_duplicates=" + str(num_duplicates))
-	#print("after dedup, len(pub_list)=" + str(len(pub_list)))
-	#print("num_index_errors=" + str(num_index_errors))
-	#print("for validation/reference, duplicates stored in " + out_file)
 	file_handler.close()
 	return num_duplicates, pub_list
 
@@ -211,7 +178,7 @@ match_pubs=[]
 dblp_pubs = read_pubs(dblp_tsv)	
 dblp_citations= len(dblp_pubs)
 
-#scholar_pubs = read_pubs(scholar_tsv)
+scholar_pubs = read_pubs(scholar_tsv)
 scholar_citations= len(scholar_pubs)
 
 print("number of cross checks = citations("+dblp_tsv+") x citations("+scholar_tsv+")")
@@ -225,7 +192,7 @@ final_pubs = []
 out_file="stats.csv"
 file_handler = open(out_file,"w")
 file_handler.write('fuzzy_treshold,matches,duplicates,exec_time_m\n')
-for threshold in range(100, 70, -10):
+for threshold in range(100, 60, -10):
 	print("starting with fuzzy_threshold=" + str(threshold))
 	start = time.time()
 	matches, match_pubs = entityResolution(dblp_pubs,scholar_pubs, threshold)
@@ -238,11 +205,7 @@ for threshold in range(100, 70, -10):
 	print(stats_rec)
 	file_handler.write(stats_rec)
 file_handler.close()
-#sys.exit()
-	
-#match_pubs = entityResolution(dblp_pubs,scholar_pubs)
 
-#dedup_pubs = match_pubs
 
 out_file=db_scholar_tsv
 print("dedup ER stored in " + out_file)
