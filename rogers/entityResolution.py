@@ -1,4 +1,5 @@
 import string
+import time
 import sys
 # stop words
 from nltk.corpus import stopwords
@@ -15,8 +16,6 @@ dblp_tsv = "DBLP1.txt.tsv"
 #dblp_tsv = "debug.tsv"
 scholar_tsv = "Scholar.txt.tsv"
 db_scholar_tsv = "DBLP_Scholar_perfectMapping_RizwanMian.csv"
-
-fuzzy_threshold = 99
 
 id_idx = 0
 title_idx = 1
@@ -70,13 +69,14 @@ def read_pubs(in_file):
 			counter+=1
 	return pubs
 
-def entityResolution(first_list, second_list):
+def entityResolution(first_list, second_list, fuzzy_threshold):
 	num_matches=0
 	num_index_errors=0
 	counter=0
 	matched = []
 	out_file="matched.tsv"
-	file_handler = open(out_file,"w")
+	file_handler = open(out_file,"a")
+	file_handler.write("fuzzy_threshold=" + str(fuzzy_threshold) + "\n")
 	file_handler.write("did \t dtitle \t dauthor \t dvenue \t dyear \t drowid\n")	
 	for aRecord in first_list:
 		for idx, bRecord in enumerate(second_list):
@@ -111,18 +111,19 @@ def entityResolution(first_list, second_list):
 			except IndexError:
 				num_index_errors+=1
 				continue
-	print("num_matches=" + str(num_matches))
-	print("num_index_errors=" + str(num_index_errors))
+	#print("num_matches=" + str(num_matches))
+	#print("num_index_errors=" + str(num_index_errors))
 	file_handler.close()
-	return matched
+	return num_matches, matched
 
 dblp_idx=0
 scholar_idx=1
 
-def dedup(pub_list, in_file):
-	print("before dedup, len(pub_list)=" + str(len(pub_list)))
-	out_file=in_file + "_dups.tsv"	
-	file_handler = open(out_file,"w")
+def dedup(pub_list, fuzzy_threshold):
+	#print("before dedup, len(pub_list)=" + str(len(pub_list)))
+	out_file="duplicates.tsv"	
+	file_handler = open(out_file,"a")
+	file_handler.write("fuzzy_threshold=" + str(fuzzy_threshold) + "\n")
 	file_handler.write("did \t dtitle \t dauthor \t dvenue \t dyear \t drowid \t sid \t stitle \t sauthor \t svenue \t syear \t srowid \n")
 	num_duplicates=0
 	num_index_errors=0
@@ -182,27 +183,45 @@ def dedup(pub_list, in_file):
 				num_index_errors+=1
 				continue
 	
-	print("num_duplicates=" + str(num_duplicates))
-	print("after dedup, len(pub_list)=" + str(len(pub_list)))
-	print("num_index_errors=" + str(num_index_errors))
-	print("for validation/reference, duplicates stored in " + out_file)
+	#print("num_duplicates=" + str(num_duplicates))
+	#print("after dedup, len(pub_list)=" + str(len(pub_list)))
+	#print("num_index_errors=" + str(num_index_errors))
+	#print("for validation/reference, duplicates stored in " + out_file)
 	file_handler.close()
-	return pub_list
-
+	return num_duplicates, pub_list
 
 dblp_pubs = read_pubs(dblp_tsv)	
-#scholar_pubs = read_pubs(scholar_tsv)	
-#match_pubs = entityResolution(dblp_pubs,scholar_pubs)
-match_pubs = entityResolution(dblp_pubs,dblp_pubs)
-dedup_pubs = dedup(match_pubs, db_scholar_tsv)
-dedup_pubs = match_pubs
+scholar_pubs = read_pubs(scholar_tsv)
 
+final_pubs = []
+
+out_file="stats.csv"
+file_handler = open(out_file,"w")
+file_handler.write('fuzzy_treshold,matches,duplicates,exec_time_m\n')
+for threshold in range(100, 60, -10):
+	print("starting with fuzzy_threshold=" + str(threshold))
+	start = time.time()
+	matches, match_pubs = entityResolution(dblp_pubs,scholar_pubs, threshold)
+	#matches, match_pubs = entityResolution(dblp_pubs,dblp_pubs, threshold)	
+	dups, dedup_pubs = dedup(match_pubs, threshold)
+	final_pubs = dedup_pubs
+	end = time.time()
+	exec_time = end - start
+	stats_rec = str(threshold) + "," + str(matches) + "," + str(dups) + "," + str(round(exec_time/60,2)) + "\n"
+	print(stats_rec)
+	file_handler.write(stats_rec)
+file_handler.close()
+#sys.exit()
+	
+#match_pubs = entityResolution(dblp_pubs,scholar_pubs)
+
+#dedup_pubs = match_pubs
 
 out_file=db_scholar_tsv
 print("dedup ER stored in " + out_file)
 file_handler = open(out_file,"w")
 file_handler.write('idDBLP,idScholar,DBLP_Match,Scholar_Match,Match_ID\n')
-for match in dedup_pubs:
+for match in final_pubs:
 	file_handler.write(match[dblp_idx][id_idx] + "," + match[scholar_idx][id_idx] + "," + \
 		match[dblp_idx][rowid_dx] + "," + match[scholar_idx][rowid_dx] + "," + \
 		match[dblp_idx][rowid_dx] + "_" + match[scholar_idx][rowid_dx] + "\n")

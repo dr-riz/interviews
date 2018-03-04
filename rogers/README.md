@@ -56,6 +56,10 @@ Domain Knowledge:
 - titles and authors' last names are not shortened. Only the venue
 - With above, I claim that author names, title and year are usually enough to uniquely identify a publication
 
+Approach:
+- mvp based
+- brute force
+
 ### 1st mvp
 
 1. generate readable records 
@@ -75,19 +79,24 @@ Separately, I checked for duplications in both data sets. There are about 150 an
 git tag: first_mvp
 
 ### 2nd mvp
-3. advanced preprocessing [1]: remove punctuation, stop words; stem words
+3. advanced preprocessing [1]: remove punctuation, stop words; stem words. Much more can be done.
 4. advanced record matching using employ machine learning methods. Use fuzzy wuzzy [3,4]
 	- fuzzywuzzy
 
 Results and Discussion:
-3. Noting the improved matching after each preprocessing step
-	- recall baseline: 608 matches + 3 dups, under 1m
-	- remove punctuation e.g. ".": 621 matches + 3 dups, 1.5m
-	- remove stop words e.g. is, and: 633 matches + 3 dups, 1.5m
-	- stem words e.g. fishing, fished reduce to stem fish: 640 matches + 3 dups, 2.5m 
+3. Tabling the improved matching after each preprocessing step
+
+| (cumulative) preprocessing   | matches(#) | duplicates(#) | runtime(m) |
+| ---------------------------- | ---------- | ------------- | ---------- | 
+| first_mvp (baseline)         | 608   		| 3      		| 1          |
+| remove punctuation e.g. "."  | 621   		| 3 			| 1.5 		 |
+| remove stop words e.g. is    | 633   		| 3 			| 1.5  		 |
+| sten word e.g. fished to fish| 640   		| 3				| 2.5		 | 
+
 4. After preprocessing title and authors, using fuzz.ratio on author names (order does matter) and fuzz.token_sort_ratio on title as only keyword remain after stemming.
 	- fuzzy_threshold = 100
-	 
+	
+	It is business decision to choose the fuzzy_threshold. 
 
 
 ### Challenges
@@ -100,6 +109,7 @@ Methods
 
 ### Outstanding
 - include lost data sets when generating readable records
+- optimize to run faster
 
 
 ### References
