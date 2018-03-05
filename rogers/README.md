@@ -1,11 +1,11 @@
 # Rogers
 
-** Problem description and instructions are in Entity_Resolution.pdf **
+**Problem description and instructions are in Entity_Resolution.pdf**
 
-Asks: 
+Asks in a nutshell: 
 - match the citations in both datasets
 - deduplicate redundant matches
-- address more than one possible representatoin e.g. VLDB and Very Large Databases represent the same venue
+- address more than one possible representation e.g. VLDB and Very Large Databases represent the same venue
 
 ## Solution
 
@@ -18,6 +18,7 @@ Initial assessment:
 - While datasets are suffixed by ".csv", they are not plain text ".csv" files. 
 - In addition to attribute values, author names are also separate by comma
 - At times, attribute values are missing values e.g. ID, year
+- At times, url is provided in place of citation id. We perform no checking on citation id and use it verbatim in output.csv
 
 Our Domain Knowledge:
 1. A publication with the same exact title and authors cannot be published at two venues in the same year, or any other year for that matter
@@ -85,13 +86,15 @@ For inspection, duplicates for each threshold are stored in duplicates.tsv. As w
 
 We want the most matches but must balance false negatives vs. false positives. The datasets are unlabeled, so it is difficult find out the number of false negative/positives. Next step might be to generate the same citations from both dblp and scholar databases, i.e. a controlled dataset. Then, use the script and different thresholds to measure the number of matches or misses. Business input on the preference of matches or misses is also relevant.
 
-Finally, the de-duplicated matched citations (for threshold =70) are stored in DBLP_Scholar_perfectMapping_RizwanMian.csv.
+Finally, the de-duplicated matched citations (for threshold =70) are stored in DBLP_Scholar_perfectMapping_RizwanMian.csv. The name template is suggested by the instructions. As we demonstrate above, there are tradeoffs and hence our mapping is less than perfect.
+
+git tag: second_mvp
 
 ### Future Work
 - Include lost data sets when generating readable records
-- Optimize to run faster
 - Use control datasets to measure matches and misses of the script
-- catching more than one representation VLDB and Very Large Databases
+- Catch more than one representation VLDB and Very Large Databases
+- Optimize code for improved readability and performance
 
 ### References
 1. How to Clean Text for Machine Learning with Python: https://machinelearningmastery.com/clean-text-machine-learning-python/
