@@ -93,7 +93,9 @@ git tag: second_mvp
 ### Future Work
 - Include lost data sets when generating readable records
 - Use control datasets to measure matches and misses of the script
+- Research best practise on fuzzy threshold
 - Catch more than one representation VLDB and Very Large Databases
+- Check if doing double preprocessing using nltk and fuzzy wuzzy
 - Optimize code for improved readability and performance
 
 ### References
