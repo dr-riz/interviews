@@ -8,7 +8,7 @@ As a problem solver, approach is:
 - big fan of wiki/docs to generate interest and knowledge transfer
 
 # Academic
-### PhD
+### [PhD](mian_14_PhD_certificate.pdf)
 Aug 09 - Nov 13	Queen's University, Canada
 (4y)	Database Systems Lab	(http://queensdsl.weebly.com/). 
 Doctor of Philosophy (PhD) in Computer Science. 
