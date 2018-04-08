@@ -1,3 +1,7 @@
+# Academic
+
+I own the copyright of my MPhil thesis (2005), and hence making it public. Title: MANAGING DISTRIBUTED INFORMATION FOR PERFORMANCE CONTROL OF GRID-BASED APPLICATIONS
+
 # interviews
 
 I am going to use this repo as a collection of interview questions/exercises and my attempts.
