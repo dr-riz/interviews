@@ -12,9 +12,13 @@ As a problem solver, approach is:
 # Academic
 ### PhD
 Aug 09 - Nov 13	Queen's University, Canada
+
 (4y)	Database Systems Lab	(http://queensdsl.weebly.com/)
+
 Doctor of Philosophy (PhD) in Computer Science
+
 **Advisor: Prof. Patrick Martin, Prof. Farhana Zulkernine**
+
 *Thesis: [Cost-Effective Resource Configurations for Executing Data-intensive Workloads in Public Clouds](https://qspace.library.queensu.ca/handle/1974/8497?show=full)*
 
 **Condensed abstract**
