@@ -45,3 +45,7 @@ I list trainings and certifications that are orthognal to my industrial and acad
 11. Confidential and Privacy
 12. Sexual Harassment Awareness
 13. Anti-Bribery and Anti-Corruption Policy
+
+**2021**
+1. Prevent and Detect Fraud
+2. Practising Intentional Inclusion
